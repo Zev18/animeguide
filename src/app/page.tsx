@@ -1,23 +1,17 @@
-import { redirect } from "next/navigation";
-import supabaseServer from "@/utils/supabaseServer";
-import Login from "@/components/Login";
+"use client";
 
-export default async function Home() {
-  const {
-    data: { session },
-  } = await supabaseServer.auth.getSession();
+import { useAtom } from "jotai";
+import { userAtom } from "@/atoms";
 
-  if (session) {
-    redirect("/success");
-  }
-
-  console.log(session);
+export default function Home() {
+  const [user, setUser] = useAtom(userAtom);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+    <main className="flex h-full flex-col items-center justify-center p-24">
       <h1 className="text-3xl font-bold">Anime Guide</h1>
-      <p>Please login.</p>
-      <Login loggedIn={!!session} />
+      <pre className="max-w-2xl whitespace-break-spaces">
+        {JSON.stringify(user, null, 2)}
+      </pre>
     </main>
   );
 }
