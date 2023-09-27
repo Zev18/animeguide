@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import supabaseServer from "@/utils/supabaseServer";
+import supabaseServerComponentClient from "@/utils/supabaseServer";
 import Login from "@/components/Login";
 import { camelize } from "@/utils/utils";
 import Providers from "./providers";
@@ -18,6 +18,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const supabaseServer = await supabaseServerComponentClient();
+
   const {
     data: { user },
   } = await supabaseServer.auth.getUser();

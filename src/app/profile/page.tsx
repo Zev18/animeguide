@@ -157,7 +157,7 @@ export default function Profile() {
           description="Connect your MyAnimeList account to sync your watchlist."
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="text-default-400 text-small">
+              <span className="text-small text-default-400">
                 https://myanimelist.net/profile/
               </span>
             </div>
