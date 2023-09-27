@@ -42,7 +42,7 @@ export default async function RootLayout({
               <Login user={user} userData={userData} />
             </div>
           </div>
-          <main>{children}</main>
+          <main className="p-4">{children}</main>
         </Providers>
       </body>
     </html>
