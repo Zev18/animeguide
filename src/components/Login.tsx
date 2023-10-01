@@ -19,9 +19,7 @@ export default function Login({
   const router = useRouter();
   const [userAtom, setUserAtom] = useAtom(userAtomTemplate);
 
-  useEffect(() => {
-    if (!userAtom && userData) setUserAtom(userData);
-  });
+  if (!userAtom && userData) setUserAtom(userData);
 
   const signOut = async () => {
     await supabase.auth.signOut();

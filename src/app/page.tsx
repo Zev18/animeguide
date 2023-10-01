@@ -1,6 +1,6 @@
 "use client";
 
-import { useAtom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { userAtom } from "@/atoms";
 
 export default function Home() {

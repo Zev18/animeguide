@@ -77,7 +77,6 @@ export default function Profile() {
   }, [malId, malIdSchema]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
     setSubmitting(true);
     try {
       userSchema.parse({ username, displayName, malId });
@@ -90,6 +89,7 @@ export default function Profile() {
           mal_id: malId,
         })
         .eq("id", user!.id);
+      console.log("success");
 
       if (error) {
         console.error(error);
