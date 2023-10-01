@@ -20,7 +20,7 @@ export default function Login({
   const [userAtom, setUserAtom] = useAtom(userAtomTemplate);
 
   useEffect(() => {
-    setUserAtom(userData);
+    if (!userAtom && userData) setUserAtom(userData);
   });
 
   const signOut = async () => {
