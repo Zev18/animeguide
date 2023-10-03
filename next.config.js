@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
 
 module.exports = {
   images: {
@@ -11,5 +10,6 @@ module.exports = {
         pathname: "/a/**",
       },
     ],
+    minimumCacheTTL: 60,
   },
 };

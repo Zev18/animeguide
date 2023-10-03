@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
-import supabase from "@/utils/supabaseClient";
-import { useRouter } from "next/navigation";
-import { Menu } from "@headlessui/react";
-import Image from "next/image";
 import placeholder from "@/assets/images/placeholder.jpg";
-import { useAtom } from "jotai";
 import { userAtom as userAtomTemplate } from "@/atoms";
+import supabase from "@/utils/supabaseClient";
+import { Menu } from "@headlessui/react";
+import { useAtom } from "jotai";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Login({
   user,
@@ -47,7 +46,7 @@ export default function Login({
           />
         </div>
       </Menu.Button>
-      <Menu.Items className="absolute right-0 min-w-max rounded-xl border-2 border-slate-400 p-4">
+      <Menu.Items className="absolute right-0 z-50 min-w-max rounded-xl border-2 border-slate-400 bg-white p-4">
         <Menu.Item>
           <button onClick={signOut}>Sign out</button>
         </Menu.Item>

@@ -38,7 +38,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <div className="flex items-center justify-between p-10">
+          <div className="flex items-center justify-between p-6 md:p-10">
             <h1 className="text-xl font-bold">Anime guide</h1>
             <div>
               <Login user={user} userData={userData} />

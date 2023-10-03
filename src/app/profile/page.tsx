@@ -1,20 +1,40 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { Input, Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
 import { userAtom } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
+import UsernameCheck from "./UsernameCheck";
 
 export default function Profile() {
   const router = useRouter();
-  const [user, setUser] = useAtom(userAtom);
+  const [user] = useAtom(userAtom);
   const [submitting, setSubmitting] = React.useState(false);
   const [username, setUsername] = useState("");
+  const [usernameValid, setUsernameValid] = useState("");
   const [displayName, setDisplayName] = useState(user?.displayName);
   const [malId, setMalId] = useState("");
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      await checkUsername();
+    }, 200);
+
+    const checkUsername = async () => {
+      const { count } = await supabase
+        .from("users")
+        .select("*", { count: "exact", head: true })
+        .eq("username", username);
+
+      setUsernameValid(count === 0 ? "true" : "false");
+    };
+
+    setUsernameValid("loading");
+    return () => clearTimeout(delayDebounceFn);
+  }, [username]);
 
   const usernameSchema = z
     .string({ required_error: "Username is required" })
@@ -29,7 +49,14 @@ export default function Profile() {
     .max(30, "Display name is too long.")
     .optional();
 
-  const malIdSchema = z.string().max(16, "MAL ID is too long.").optional();
+  const malIdSchema = z
+    .string()
+    .max(16, "MAL ID is too long.")
+    .regex(
+      /^[a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=]*$/,
+      "Invalid character detected",
+    )
+    .optional();
 
   const userSchema = z.object({
     username: usernameSchema,
@@ -89,7 +116,7 @@ export default function Profile() {
           mal_id: malId,
         })
         .eq("id", user!.id);
-      console.log("success");
+      console.log(error);
 
       if (error) {
         console.error(error);
@@ -118,8 +145,20 @@ export default function Profile() {
           isRequired
           value={username}
           onValueChange={setUsername}
-          color={isUsernameValid ? "default" : "danger"}
-          errorMessage={usernameErrorMessage ? usernameErrorMessage : undefined}
+          color={
+            isUsernameValid && usernameValid !== "false"
+              ? usernameValid !== "true"
+                ? "default"
+                : "success"
+              : "danger"
+          }
+          errorMessage={
+            usernameErrorMessage
+              ? usernameErrorMessage
+              : usernameValid === "false"
+              ? "Username already taken."
+              : undefined
+          }
           type="text"
           label="Username"
           variant="bordered"
@@ -128,6 +167,7 @@ export default function Profile() {
             description: "text-sm",
             errorMessage: "text-sm",
           }}
+          endContent={<UsernameCheck status={usernameValid} />}
         />
         <Input
           value={displayName}
@@ -172,6 +212,12 @@ export default function Profile() {
           color="primary"
           variant="shadow"
           type="submit"
+          isDisabled={
+            !isUsernameValid ||
+            !isDisplayNameValid ||
+            !isMalIdValid ||
+            usernameValid === "false"
+          }
           isLoading={submitting}
         >
           Done
