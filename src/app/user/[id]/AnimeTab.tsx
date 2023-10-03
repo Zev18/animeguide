@@ -25,7 +25,7 @@ export default function AnimeTab({
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {animeList ? (
-          animeList.data.map((anime) => (
+          animeList.data?.map((anime) => (
             <AnimeCard key={anime.node.id} anime={anime} />
           ))
         ) : (

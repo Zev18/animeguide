@@ -4,8 +4,6 @@ import { notFound } from "next/navigation";
 import ProfileData from "./ProfileData";
 import UserTabs from "./UserTabs";
 
-// TODO: (later) Generate static params
-
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await supabaseServerComponentClient();
 
