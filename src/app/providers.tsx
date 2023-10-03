@@ -1,12 +1,12 @@
 "use client";
 
-import { Provider } from "jotai";
 import { NextUIProvider } from "@nextui-org/react";
+import { Provider } from "jotai";
 
 export default function Providers({ children }: any) {
   return (
-    <NextUIProvider>
-      <Provider>{children}</Provider>
-    </NextUIProvider>
+    <Provider>
+      <NextUIProvider>{children}</NextUIProvider>
+    </Provider>
   );
 }

@@ -7,6 +7,7 @@ import { Menu } from "@headlessui/react";
 import { useAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login({
   user,
@@ -17,8 +18,12 @@ export default function Login({
 }) {
   const router = useRouter();
   const [userAtom, setUserAtom] = useAtom(userAtomTemplate);
+  const [firstTime, setFirstTime] = useState(true);
 
-  if (!userAtom && userData) setUserAtom(userData);
+  if (!userAtom && userData && firstTime) {
+    setUserAtom(userData);
+    setFirstTime(false);
+  }
 
   const signOut = async () => {
     await supabase.auth.signOut();

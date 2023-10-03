@@ -24,7 +24,6 @@ export default function ReviewsTab({ username }: { username: string }) {
           </Button>
         )}
       </div>
-      <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   );
 }

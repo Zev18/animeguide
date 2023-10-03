@@ -1,7 +1,7 @@
 "use client";
 
-import { atom, useAtom } from "jotai";
 import { userAtom } from "@/atoms";
+import { useAtom } from "jotai";
 
 export default function Home() {
   const [user] = useAtom(userAtom);
