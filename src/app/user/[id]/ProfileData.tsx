@@ -37,9 +37,11 @@ export default function ProfileData({
               </h3>
               <p className="text-foreground-400">@{userInfo.username}</p>
             </div>
-            <Link showAnchorIcon isExternal href={malUrl(userInfo.malId)}>
-              View Anime List
-            </Link>
+            {userInfo.malId && (
+              <Link showAnchorIcon isExternal href={malUrl(userInfo.malId)}>
+                View Anime List
+              </Link>
+            )}
             <p className="text-sm text-foreground-400">
               {"Joined " + timestampToDate(userInfo.createdAt)}
             </p>

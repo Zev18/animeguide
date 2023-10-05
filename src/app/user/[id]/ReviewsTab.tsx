@@ -1,12 +1,33 @@
 "use client";
 
 import { userAtom } from "@/atoms";
+import RadarChart from "@/components/RadarChart";
+import supabase from "@/utils/supabaseClient";
 import { Button } from "@nextui-org/react";
 import { useAtom } from "jotai";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ReviewsTab({ username }: { username: string }) {
   const [user] = useAtom(userAtom);
+  const [reviews, setReviews] = useState<any[]>([]);
+
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("reviews")
+          .select("*, users!inner(username), detailed_score(*)")
+          .eq("users.username", username);
+
+        setReviews(data!);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getReviews();
+  }, [username]);
 
   return (
     <div className="m-1 flex flex-col gap-4">
@@ -24,6 +45,7 @@ export default function ReviewsTab({ username }: { username: string }) {
           </Button>
         )}
       </div>
+      {reviews[0] && <RadarChart data={reviews[0]?.detailed_score} />}
     </div>
   );
 }

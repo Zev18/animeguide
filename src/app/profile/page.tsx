@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { z } from "zod";
-import { Input, Button } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useAtom } from "jotai";
 import { userAtom } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
+import { Button, Input } from "@nextui-org/react";
+import { useAtom } from "jotai";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import UsernameCheck from "./UsernameCheck";
 
 export default function Profile() {
@@ -26,7 +26,7 @@ export default function Profile() {
     const checkUsername = async () => {
       const { count } = await supabase
         .from("users")
-        .select("*", { count: "exact", head: true })
+        .select("*", { count: "estimated", head: true })
         .eq("username", username);
 
       setUsernameValid(count === 0 ? "true" : "false");

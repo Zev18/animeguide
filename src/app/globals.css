@@ -13,3 +13,24 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+.axis {
+  stroke: #aaa;
+  stroke-width: 0.2;
+}
+.scale {
+  stroke: #aaa;
+  stroke-width: 1;
+}
+.shape {
+  fill-opacity: 0.3;
+}
+.shape:hover {
+  fill-opacity: 0.6;
+  stroke-width: 0.5;
+}
+
+.shape.anime {
+  fill: #30ddff;
+  stroke: #30ddff;
+}

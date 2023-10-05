@@ -21,6 +21,12 @@ export const hiRes = (size: number, url: string) => {
   return url.replace(/=s96-c$/, `=s${size}`);
 };
 
+/**
+ * Converts a timestamp string into a formatted date string.
+ *
+ * @param {string} timestamp - The timestamp string to convert.
+ * @return {string} The formatted date string.
+ */
 export const timestampToDate = (timestamp: string): string => {
   const date = new Date(timestamp);
 
@@ -53,6 +59,16 @@ type animeListSort =
   | "anime_title"
   | "anime_start_date";
 
+/**
+ * Retrieves a list of anime from MyAnimeList API based on the provided parameters.
+ *
+ * @param {string} malId - The MyAnimeList user ID.
+ * @param {number} [limit] - The maximum number of anime to retrieve.
+ * @param {number} [offset] - The offset for pagination.
+ * @param {animeStatus} [status] - The status of the anime in the user's list.
+ * @param {animeListSort} [sort] - The sorting criteria for the retrieved anime.
+ * @return {Promise<any>} - A promise that resolves to the retrieved anime data or an error.
+ */
 export const getMalList = async (
   malId: string,
   limit?: number,
@@ -95,4 +111,21 @@ export const getMalList = async (
   } catch (error) {
     return error;
   }
+};
+
+/**
+ * Calculates the average value of an array of numbers.
+ *
+ * @param {number[]} data - The array of numbers to calculate the average from.
+ * @param {number} [places] - The number of decimal places to round the average to.
+ * @return {number} The average value of the array.
+ */
+export const getAverage = (data: number[], places: number = 1) => {
+  const sum = data.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0,
+  );
+  const average = sum / data.length;
+
+  return average.toFixed(places);
 };

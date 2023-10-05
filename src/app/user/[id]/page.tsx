@@ -11,12 +11,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     await supabase.from("users").select().eq("username", params.id).single(),
   );
 
-  const animeList = await getMalList(
-    userData.malId,
-    10,
-    ...[, ,],
-    "list_updated_at",
-  );
+  const animeList =
+    userData && userData.malId
+      ? await getMalList(userData.malId, 10, ...[, ,], "list_updated_at")
+      : null;
 
   if (!userData) return notFound();
 
@@ -26,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <UserTabs
         animeList={animeList}
         className="flex w-full flex-col"
-        username={params.id}
+        userInfo={userData}
       />
     </div>
   );
