@@ -32,11 +32,19 @@ export default function Login({
   };
 
   const signIn = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${location.origin}/auth/callback` },
-    });
-    router.refresh();
+    try {
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const { data } = await response.json();
+      if (!data?.url) throw new Error("No url returned");
+      router.push(data.url);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return user ? (
