@@ -10,16 +10,18 @@ export default function UserTabs({
   className,
   animeList,
   userInfo,
+  reviews,
 }: {
   className?: string;
   animeList?: UserAnimeList;
   userInfo: User;
+  reviews: any[];
 }) {
   return (
     <div className={className}>
       <Tabs aria-label="options" fullWidth>
         <Tab key="reviews" title="Reviews">
-          <ReviewsTab username={userInfo.username} />
+          <ReviewsTab username={userInfo.username} reviews={reviews} />
         </Tab>
         <Tab key="guides" title="Guides"></Tab>
         {userInfo.malId && (

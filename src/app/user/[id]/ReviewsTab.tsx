@@ -2,32 +2,20 @@
 
 import { userAtom } from "@/atoms";
 import RadarChart from "@/components/RadarChart";
-import supabase from "@/utils/supabaseClient";
-import { Button } from "@nextui-org/react";
+import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-export default function ReviewsTab({ username }: { username: string }) {
+export default function ReviewsTab({
+  username,
+  reviews,
+}: {
+  username: string;
+  reviews: any[];
+}) {
   const [user] = useAtom(userAtom);
-  const [reviews, setReviews] = useState<any[]>([]);
 
-  useEffect(() => {
-    const getReviews = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("reviews")
-          .select("*, users!inner(username), detailed_score(*)")
-          .eq("users.username", username);
-
-        setReviews(data!);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getReviews();
-  }, [username]);
+  console.log(reviews);
 
   return (
     <div className="m-1 flex flex-col gap-4">
@@ -45,7 +33,23 @@ export default function ReviewsTab({ username }: { username: string }) {
           </Button>
         )}
       </div>
-      {reviews[0] && <RadarChart data={reviews[0]?.detailed_score} />}
+      {reviews.map((review) => (
+        <Card className="p-2" key={review.id}>
+          <CardHeader className="flex w-full items-center">
+            <h4 className="text-lg font-semibold">{review.comment}</h4>
+            <div className="flex flex-col items-center justify-center gap-2">
+              <p className="rounded-lg bg-primary p-2 py-1 font-bold tracking-wide text-background">
+                {review.overallScore}
+                <span className="font-normal opacity-70">{" / 10"}</span>
+              </p>
+              <RadarChart data={review.detailedScore} />
+            </div>
+          </CardHeader>
+          <CardBody>
+            <p>{review.longReview}</p>
+          </CardBody>
+        </Card>
+      ))}
     </div>
   );
 }

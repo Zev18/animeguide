@@ -1,4 +1,4 @@
-import { Tooltip } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
 import parse from "html-react-parser";
 import { capitalize } from "lodash";
 import RadarTooltip from "./RadarTooltip";
@@ -6,7 +6,13 @@ import RadarTooltip from "./RadarTooltip";
 const radar = require("svg-radar-chart");
 const stringify = require("virtual-dom-stringify");
 
-export default function RadarChart({ data }: { data: Record<string, number> }) {
+export default function RadarChart({
+  data,
+  size = 75,
+}: {
+  data: Record<string, number>;
+  size?: number;
+}) {
   if (data) delete data.id;
   const columns: Record<string, any> = { ...data };
   let graphData: Record<string, any> = { ...data };
@@ -27,14 +33,25 @@ export default function RadarChart({ data }: { data: Record<string, number> }) {
   });
 
   const svg = (
-    <svg version="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <svg
+      version="1"
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+    >
       {parse(stringify(chart))}
     </svg>
   );
 
   return (
-    <Tooltip content={<RadarTooltip scores={data} />} delay={500}>
-      {svg}
-    </Tooltip>
+    <Popover>
+      <PopoverTrigger>
+        <button>{svg}</button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <RadarTooltip scores={data} />
+      </PopoverContent>
+    </Popover>
   );
 }

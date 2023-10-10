@@ -114,6 +114,35 @@ export const getMalList = async (
 };
 
 /**
+ * Retrieves details of an anime from the MyAnimeList API.
+ *
+ * @param {number} animeId - The ID of the anime to retrieve details for.
+ * @return {Promise<any>} - A Promise that resolves to the details of the anime.
+ */
+export const getAnimeDetails = async (animeId: number) => {
+  const headers: HeadersInit = {
+    "Content-Type": "application.json",
+    "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,
+  };
+
+  const url = new URL(`https://api.myanimelist.net/v2/anime/${animeId}`);
+  url.searchParams.set("fields", "main_picture,title");
+
+  try {
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      throw new Error("Anime not found");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+/**
  * Calculates the average value of an array of numbers.
  *
  * @param {number[]} data - The array of numbers to calculate the average from.
