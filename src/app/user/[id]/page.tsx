@@ -18,9 +18,12 @@ export default async function Page({ params }: { params: { id: string } }) {
       .eq("users.username", params.id),
   );
 
-  for (const review of reviews) {
-    const anime = await getAnimeDetails(review.animeId);
-    review["anime"] = anime;
+  if (reviews) {
+    for (const review of reviews) {
+      const anime = await getAnimeDetails(review.animeId);
+      review["anime"] = camelize(anime);
+      console.log(anime);
+    }
   }
 
   const animeList =

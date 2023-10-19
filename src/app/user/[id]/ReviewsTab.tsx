@@ -1,10 +1,10 @@
 "use client";
 
 import { userAtom } from "@/atoms";
-import RadarChart from "@/components/RadarChart";
-import { Button, Card, CardBody, CardHeader } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { useAtom } from "jotai";
 import Link from "next/link";
+import ReviewCard from "./ReviewCard";
 
 export default function ReviewsTab({
   username,
@@ -14,8 +14,6 @@ export default function ReviewsTab({
   reviews: any[];
 }) {
   const [user] = useAtom(userAtom);
-
-  console.log(reviews);
 
   return (
     <div className="m-1 flex flex-col gap-4">
@@ -34,21 +32,7 @@ export default function ReviewsTab({
         )}
       </div>
       {reviews.map((review) => (
-        <Card className="p-2" key={review.id}>
-          <CardHeader className="flex w-full items-center">
-            <h4 className="text-lg font-semibold">{review.comment}</h4>
-            <div className="flex flex-col items-center justify-center gap-2">
-              <p className="rounded-lg bg-primary p-2 py-1 font-bold tracking-wide text-background">
-                {review.overallScore}
-                <span className="font-normal opacity-70">{" / 10"}</span>
-              </p>
-              <RadarChart data={review.detailedScore} />
-            </div>
-          </CardHeader>
-          <CardBody>
-            <p>{review.longReview}</p>
-          </CardBody>
-        </Card>
+        <ReviewCard key={review.id} review={review} />
       ))}
     </div>
   );

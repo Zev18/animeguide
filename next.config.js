@@ -9,6 +9,12 @@ module.exports = {
         port: "",
         pathname: "/a/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.myanimelist.net",
+        port: "",
+        pathname: "/images/anime/**",
+      },
     ],
     minimumCacheTTL: 60,
   },
