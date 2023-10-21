@@ -6,24 +6,22 @@ import { ArrowRight, Star } from "react-feather";
 
 export default function ReviewCard({
   review,
-  key,
 }: {
   review: Record<string, any>;
-  key: string;
 }) {
   const stars = [];
   for (let i = 0; i < Math.floor(review.overallScore / 2); i++) {
     stars.push(<Star key={i} />);
   }
   if (review.overallScore % 2 !== 0) {
-    stars.push(<Star strokeWidth={3} size={12} />);
+    stars.push(<Star key={stars.length} strokeWidth={3} size={12} />);
   }
 
   const smallText = review?.anime.title.length > 30;
 
   console.log(review);
   return (
-    <Card className="max-w-prose p-2" key={key}>
+    <Card className="max-w-prose p-2">
       <CardBody className="gap-2 sm:gap-4">
         <div className="flex w-full flex-col justify-between sm:flex-row sm:items-center sm:gap-4">
           <div className="flex max-h-min w-full items-center gap-4">
