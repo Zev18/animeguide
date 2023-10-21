@@ -1,6 +1,7 @@
 import UserAnimeList from "@/types/userAnimeList";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
+import { ArrowRight } from "react-feather";
 import AnimeCard from "./AnimeCard";
 
 export default function AnimeTab({
@@ -17,7 +18,7 @@ export default function AnimeTab({
         <Button
           as={Link}
           color="primary"
-          variant="bordered"
+          variant="ghost"
           href={`/user/${username}/animes`}
         >
           View all
@@ -32,6 +33,15 @@ export default function AnimeTab({
           <div>No animes found.</div>
         )}
       </div>
+      <Button
+        color="primary"
+        variant="light"
+        className="my-2 self-center"
+        as={Link}
+        href={`/reviews/${username}/animes`}
+      >
+        View more <ArrowRight size={16} />
+      </Button>
     </div>
   );
 }

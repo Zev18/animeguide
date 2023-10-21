@@ -2,6 +2,24 @@ import { getAverage } from "@/utils/utils";
 import { Progress } from "@nextui-org/react";
 import { capitalize } from "lodash";
 
+const size = 10;
+
+import Access from "../assets/vector/radar-chart/access";
+import Book from "../assets/vector/radar-chart/book";
+import Film from "../assets/vector/radar-chart/film";
+import Heart from "../assets/vector/radar-chart/heart";
+import Palette from "../assets/vector/radar-chart/palette";
+import People from "../assets/vector/radar-chart/people";
+
+const icons = [
+  <Book key={1} size={size} />,
+  <People key={2} size={size} />,
+  <Heart key={3} size={size} />,
+  <Access key={4} size={size} />,
+  <Film key={5} size={size} />,
+  <Palette key={6} size={size} />,
+];
+
 export default function RadarTooltip({
   scores = {},
 }: {
@@ -21,14 +39,19 @@ export default function RadarTooltip({
         </p>
       </div>
       <div className="w-sm grid grid-cols-2 gap-4">
-        {scoreKeys.map((score) => (
+        {scoreKeys.map((score, index) => (
           <Progress
             size="sm"
             key={score}
             maxValue={10}
             value={scores[score]}
             showValueLabel
-            label={capitalize(score)}
+            label={
+              <div className="flex min-w-max items-center gap-2">
+                <span className="text-default-500">{icons[index]}</span>{" "}
+                {capitalize(score)}
+              </div>
+            }
             formatOptions={{ style: "decimal" }}
             classNames={{
               label: "text-tiny mr-4",

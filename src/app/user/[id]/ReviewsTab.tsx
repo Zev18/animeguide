@@ -16,7 +16,7 @@ export default function ReviewsTab({
   const [user] = useAtom(userAtom);
 
   return (
-    <div className="m-1 flex flex-col gap-4">
+    <div className="m-1 flex flex-col items-center gap-4">
       <div className="flex w-full items-center justify-between">
         <h3 className="text-2xl font-bold">Reviews</h3>
         {user && user.username === username && (
