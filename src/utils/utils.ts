@@ -47,13 +47,13 @@ export const malUrl = (malId: string): string => {
   return `https://myanimelist.net/profile/${malId}`;
 };
 
-type animeStatus =
+export type animeStatus =
   | "watching"
   | "completed"
   | "on_hold"
   | "dropped"
   | "plan_to_watch";
-type animeListSort =
+export type animeListSort =
   | "list_score"
   | "list_updated_at"
   | "anime_title"
@@ -157,4 +157,45 @@ export const getAverage = (data: number[], places: number = 1) => {
   const average = sum / data.length;
 
   return average.toFixed(places);
+};
+
+/**
+ * Retrieves the details of an anime from the MAL API for use in client-side components.
+ *
+ * @param {number} animeId - The ID of the anime to retrieve details for.
+ * @return {Promise<any>} A promise that resolves to the details of the anime.
+ */
+export const getAnimeDetailsClient = async (animeId: number) => {
+  const url = `/api/mal/anime?id=${animeId}`;
+  const res = await fetch(url);
+  return await res.json();
+};
+
+/**
+ * Retrieves the MAL list client for a specific MAL ID for use in client-side components.
+ *
+ * @param {string} malId - The MAL ID of the user.
+ * @param {number} [limit] - The maximum number of items to retrieve.
+ * @param {number} [offset] - The offset of the items to retrieve.
+ * @param {animeStatus} [status] - The status of the anime list.
+ * @param {animeListSort} [sort] - The sorting order of the anime list.
+ * @return {Promise<any>} - A promise that resolves to the MAL list client.
+ */
+export const getMalListClient = async (
+  malId: string,
+  limit?: number,
+  offset?: number,
+  status?: animeStatus,
+  sort?: animeListSort,
+) => {
+  const url = "/api/mal/userlist";
+  const params = new URLSearchParams();
+  params.append("malId", malId);
+  if (limit) params.append("limit", limit.toString());
+  if (offset) params.append("offset", offset.toString());
+  if (status) params.append("status", status.toString());
+  if (sort) params.append("sort", sort.toString());
+
+  const res = await fetch(url);
+  return await res.json();
 };

@@ -15,14 +15,43 @@ export default async function Page({ params }: { params: { id: string } }) {
     await supabase
       .from("reviews")
       .select("*, users!inner(username), detailed_score(*)")
-      .eq("users.username", params.id),
+      .eq("users.username", params.id)
+      .limit(10),
   );
+
+  const { data: guides } = camelize(
+    await supabase
+      .from("anime_guides")
+      .select("*, users!inner(username), categories(category)")
+      .eq("users.username", params.id)
+      .limit(10),
+  );
+
+  if (guides) {
+    const guidePromises = guides.map(async (guide: Record<string, any>) => {
+      guide["animes"] = [];
+      const { data: animes } = await supabase
+        .from("guides_anime_map")
+        .select("anime_id")
+        .order("order", { ascending: false })
+        .eq("guide_id", guide.id)
+        .limit(3);
+      if (animes) {
+        const animePromises = animes.map(async (anime) => {
+          const animeData = await getAnimeDetails(anime.anime_id);
+          guide.animes.push(animeData);
+        });
+        await Promise.all(animePromises);
+      }
+    });
+
+    await Promise.all(guidePromises);
+  }
 
   if (reviews) {
     for (const review of reviews) {
       const anime = await getAnimeDetails(review.animeId);
       review["anime"] = camelize(anime);
-      console.log(anime);
     }
   }
 
@@ -41,6 +70,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         animeList={animeList}
         className="flex w-full flex-col"
         userInfo={userData}
+        guides={guides}
       />
     </div>
   );

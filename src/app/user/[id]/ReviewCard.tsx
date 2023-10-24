@@ -17,9 +17,8 @@ export default function ReviewCard({
     stars.push(<Star key={stars.length} strokeWidth={3} size={12} />);
   }
 
-  const smallText = review?.anime.title.length > 30;
+  const smallText = review?.anime.title && review.anime.title.length > 30;
 
-  console.log(review);
   return (
     <Card className="max-w-prose p-2">
       <CardBody className="gap-2 sm:gap-4">
