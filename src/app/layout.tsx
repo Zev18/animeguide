@@ -5,6 +5,8 @@ import supabaseComponentClient from "@/utils/supabaseServer";
 import Login from "@/components/Login";
 import { camelize } from "@/utils/utils";
 import Providers from "./providers";
+import {  Dropdown,  DropdownTrigger,  DropdownMenu,  DropdownSection,  DropdownItem} from "@nextui-org/react";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,7 +41,10 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Providers>
           <div className="flex items-center justify-between p-6 md:p-10">
-            <h1 className="text-xl font-bold">Anime guide</h1>
+            <div className="flex justify-self-center"> 
+              <Link href={"/"}className="justify-self-start, text-xl font-bold">Anime guide</Link>
+              <Link href={"/search"} className="justify-self-start, text-xl font-bold pl-10">Discover</Link>
+            </div>
             <div>
               <Login user={user} userData={userData} />
             </div>

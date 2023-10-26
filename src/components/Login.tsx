@@ -8,6 +8,8 @@ import { useAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {  Dropdown,  DropdownTrigger,  DropdownMenu,  DropdownSection,  DropdownItem, Button} from "@nextui-org/react";
+import Link from "next/link";
 
 export default function Login({
   user,
@@ -47,25 +49,30 @@ export default function Login({
     }
   };
 
+
+
   return user ? (
-    <Menu as="div" className="relative">
-      <Menu.Button>
-        <div className="relative h-12 w-12">
-          <Image
-            src={userData.avatarUrl ? userData.avatarUrl : placeholder}
-            alt="profile Icon"
-            fill
-            className="rounded-full border-4 border-slate-700 object-contain"
-          />
-        </div>
-      </Menu.Button>
-      <Menu.Items className="absolute right-0 z-50 min-w-max rounded-xl border-2 border-slate-400 bg-white p-4">
-        <Menu.Item>
+    <Dropdown>
+       <DropdownTrigger>
+            <div className="relative h-12 w-12">
+              <Image
+                src={userData.avatarUrl ? userData.avatarUrl : placeholder}
+                alt="profile Icon"
+                fill
+                className="rounded-full border-4 border-slate-700 object-contain"
+              />
+            </div>
+        </DropdownTrigger>
+      <DropdownMenu aria-label="Dynamic Actions" >
+        <DropdownItem>
+          <Link href={userData.username? `/user/${userData.username}`:'/profile'}>{userData.username? "Profile" : "Set Up Profile"}</Link>
+        </DropdownItem>
+        <DropdownItem>
           <button onClick={signOut}>Sign out</button>
-        </Menu.Item>
-      </Menu.Items>
-    </Menu>
-  ) : (
+        </DropdownItem>
+      </DropdownMenu>
+   </Dropdown>) 
+  : (
     <button
       className="rounded-xl border-2 border-black px-4 py-2"
       onClick={signIn}
