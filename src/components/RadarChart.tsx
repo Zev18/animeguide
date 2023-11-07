@@ -35,6 +35,11 @@ export default function RadarChart({
     columns[key] = capitalize(key);
   }
 
+  console.log(columns);
+  console.log(graphData);
+
+  if (Object.keys(columns).length === 0) return;
+
   const chart = radar(columns, graphData, {
     scales: 1,
     captions: false,
