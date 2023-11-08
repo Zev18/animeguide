@@ -7,8 +7,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function NewReview() {
+  const cookieStore = cookies();
   const supabase = createServerComponentClient<Database>({
-    cookies,
+    cookies: () => cookieStore,
   });
 
   const {

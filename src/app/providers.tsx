@@ -2,11 +2,14 @@
 
 import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "jotai";
+import { useRouter } from "next/navigation";
 
-export default function Providers({ children }: any) {
+export default function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
   return (
     <Provider>
-      <NextUIProvider>{children}</NextUIProvider>
+      <NextUIProvider navigate={router.push}>{children}</NextUIProvider>
     </Provider>
   );
 }
