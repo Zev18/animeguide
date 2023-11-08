@@ -1,9 +1,9 @@
-import supabaseComponentClient from "./supabaseServer";
+import { supabaseServerComponentClient } from "./supabaseServer";
 import { camelize } from "./utils";
 import User from "@/types/user";
 
 export async function getUser<User>() {
-  const supabase = await supabaseComponentClient();
+  const supabase = await supabaseServerComponentClient();
 
   const {
     data: { user },

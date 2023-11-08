@@ -1,12 +1,11 @@
-import "./globals.css";
+import Login from "@/components/Login";
+import { supabaseServerComponentClient } from "@/utils/supabaseServer";
+import { camelize } from "@/utils/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import supabaseComponentClient from "@/utils/supabaseServer";
-import Login from "@/components/Login";
-import { camelize } from "@/utils/utils";
-import Providers from "./providers";
-import {  Dropdown,  DropdownTrigger,  DropdownMenu,  DropdownSection,  DropdownItem} from "@nextui-org/react";
 import Link from "next/link";
+import "./globals.css";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +19,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await supabaseComponentClient();
+  const supabase = await supabaseServerComponentClient();
 
   const {
     data: { user },
@@ -41,9 +40,19 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Providers>
           <div className="flex items-center justify-between p-6 md:p-10">
-            <div className="flex justify-self-center"> 
-              <Link href={"/"}className="justify-self-start, text-xl font-bold">Anime guide</Link>
-              <Link href={"/search"} className="justify-self-start, text-xl font-bold pl-10">Discover</Link>
+            <div className="flex justify-self-center">
+              <Link
+                href={"/"}
+                className="justify-self-start, text-xl font-bold"
+              >
+                Anime guide
+              </Link>
+              <Link
+                href={"/search"}
+                className="justify-self-start, pl-10 text-xl font-bold"
+              >
+                Discover
+              </Link>
             </div>
             <div>
               <Login user={user} userData={userData} />

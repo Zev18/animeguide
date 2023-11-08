@@ -17,10 +17,12 @@ export default function RadarChart({
   data,
   size = 75,
   iconSize = 10,
+  pressable = true,
 }: {
   data: Record<string, number>;
   size?: number;
   iconSize?: number;
+  pressable?: boolean;
 }) {
   if (data) delete data.id;
   const columns: Record<string, any> = { ...data };
@@ -34,9 +36,6 @@ export default function RadarChart({
   for (const key in columns) {
     columns[key] = capitalize(key);
   }
-
-  console.log(columns);
-  console.log(graphData);
 
   if (Object.keys(columns).length === 0) return;
 
@@ -58,7 +57,7 @@ export default function RadarChart({
     </svg>
   );
 
-  return (
+  return pressable ? (
     <Popover>
       <PopoverTrigger>
         <button>
@@ -96,5 +95,33 @@ export default function RadarChart({
         <RadarTooltip scores={data} />
       </PopoverContent>
     </Popover>
+  ) : (
+    <div className="relative m-3 text-default-400">
+      {svg}
+      <Book
+        className="absolute left-[50%] top-[.1rem] -translate-x-1/2 translate-y-[-100%]"
+        size={iconSize}
+      />
+      <Access
+        className="absolute bottom-[.1rem] left-[50%] -translate-x-1/2 translate-y-[100%]"
+        size={iconSize}
+      />
+      <Film
+        className="absolute bottom-[25%] left-1 -translate-x-[100%] translate-y-1/2"
+        size={iconSize}
+      />
+      <Heart
+        className="absolute bottom-[25%] right-1 translate-x-[100%] translate-y-1/2"
+        size={iconSize}
+      />
+      <People
+        className="absolute right-1 top-[25%] -translate-y-1/2 translate-x-[100%]"
+        size={iconSize}
+      />
+      <Palette
+        className="absolute left-1 top-[25%] -translate-x-[100%] -translate-y-1/2"
+        size={iconSize}
+      />
+    </div>
   );
 }

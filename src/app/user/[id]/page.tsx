@@ -1,21 +1,37 @@
-import supabaseServerComponentClient from "@/utils/supabaseServer";
+import { supabaseServerComponentClient } from "@/utils/supabaseServer";
+import supabaseServer from "@/utils/supabaseServer";
 import { camelize, getAnimeDetails, getMalList } from "@/utils/utils";
 import { notFound } from "next/navigation";
 import ProfileData from "./ProfileData";
 import UserTabs from "./UserTabs";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const supabase = await supabaseServer;
+  const { data: users } = await supabase
+    .from("users")
+    .select("username")
+    .not("username", "is", null);
+
+  return users!.map((user) => ({
+    id: user.username,
+  }));
+}
+
+export default async function Page({ params }: { params?: { id: string } }) {
   const supabase = await supabaseServerComponentClient();
+  const username = params ? params.id : "";
 
   const { data: userData } = camelize(
-    await supabase.from("users").select().eq("username", params.id).single(),
+    await supabase.from("users").select().eq("username", username).single(),
   );
 
   const { data: reviews } = camelize(
     await supabase
       .from("reviews")
       .select("*, users!inner(username), detailed_score(*)")
-      .eq("users.username", params.id)
+      .eq("users.username", username)
       .limit(10),
   );
 
@@ -23,10 +39,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     await supabase
       .from("anime_guides")
       .select("*, users!inner(username), categories(category)")
-      .eq("users.username", params.id)
+      .eq("users.username", username)
       .limit(10),
   );
 
+  // fetch guide anime info and info on who saved the guide
   if (guides) {
     const guidePromises = guides.map(async (guide: Record<string, any>) => {
       guide["animes"] = [];
@@ -36,22 +53,43 @@ export default async function Page({ params }: { params: { id: string } }) {
         .order("order", { ascending: false })
         .eq("guide_id", guide.id)
         .limit(3);
+
+      guide.animeCount = 0;
+
       if (animes) {
         const animePromises = animes.map(async (anime) => {
-          const animeData = await getAnimeDetails(anime.anime_id);
+          const animeData = camelize(await getAnimeDetails(anime.anime_id));
           guide.animes.push(animeData);
         });
-        await Promise.all(animePromises);
+
+        const animeCountPromise = async () => {
+          const { count } = await supabase
+            .from("guides_anime_map")
+            .select("anime_id", { count: "exact", head: true })
+            .eq("guide_id", guide.id);
+          guide.animeCount = count;
+        };
+
+        await Promise.all([...animePromises, animeCountPromise()]);
       }
     });
 
-    await Promise.all(guidePromises);
+    const countPromises = guides.map(async (guide: Record<string, any>) => {
+      const { count, data } = await supabase
+        .from("guides_users_map")
+        .select("users!inner(username)", { count: "exact" })
+        .eq("guide_id", guide.id);
+      guide.savedCount = count;
+      guide.savedUsers = data;
+    });
+
+    await Promise.all([...guidePromises, ...countPromises]);
   }
 
   if (reviews) {
     for (const review of reviews) {
-      const anime = await getAnimeDetails(review.animeId);
-      review["anime"] = camelize(anime);
+      const anime = camelize(await getAnimeDetails(review.animeId));
+      review["anime"] = anime;
     }
   }
 
@@ -64,7 +102,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="flex flex-col gap-8">
-      <ProfileData username={params.id} fetchedData={userData} />
+      <ProfileData username={username} fetchedData={userData} />
       <UserTabs
         reviews={reviews}
         animeList={animeList}
