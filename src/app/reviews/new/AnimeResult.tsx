@@ -1,7 +1,13 @@
 import { Button, Image } from "@nextui-org/react";
 import React from "react";
 
-export default function AnimeResult({ anime }: { anime: Record<string, any> }) {
+export default function AnimeResult({
+  anime,
+  callback,
+}: {
+  anime: Record<string, any>;
+  callback: (anime: Record<string, any>) => void;
+}) {
   return (
     <div className="flex min-h-max max-w-full items-center justify-between gap-2 p-4">
       <div className="flex max-w-full items-center gap-2">
@@ -16,7 +22,9 @@ export default function AnimeResult({ anime }: { anime: Record<string, any> }) {
           {anime.title}
         </p>
       </div>
-      <Button variant="faded">Select</Button>
+      <Button variant="faded" onClick={() => callback(anime)}>
+        Select
+      </Button>
     </div>
   );
 }

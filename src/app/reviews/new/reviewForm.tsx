@@ -1,22 +1,33 @@
 "use client";
 
 import { userAtom } from "@/atoms";
-import { Textarea, Image, Button, Spinner, Input } from "@nextui-org/react";
-import { useAtom } from "jotai";
-import { useSearchParams } from "next/navigation";
-import React, { Suspense, useEffect, useState } from "react";
-import { Search } from "react-feather";
 import supabase from "@/utils/supabaseClient";
 import {
   camelize,
   getAnimeDetailsClient,
   searchAnimeClient,
 } from "@/utils/utils";
+import {
+  Button,
+  Image,
+  Input,
+  Progress,
+  Slider,
+  Spinner,
+  Textarea,
+} from "@nextui-org/react";
+import { useAtom } from "jotai";
 import { debounce } from "lodash";
-import AnimeResult from "./AnimeResult";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Minus, Plus, Search } from "react-feather";
 import InfiniteScroll from "react-infinite-scroll-component";
+import AnimeResult from "./AnimeResult";
+import { comment } from "postcss";
 
 export default function ReviewForm({ reviewId }: { reviewId?: number }) {
+  const commentMaxLength = 250;
+
   const [user] = useAtom(userAtom);
 
   const params = useSearchParams();
@@ -26,12 +37,12 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     animeId: animeId || null,
     comment: "",
     longReview: "",
-    overallScore: "",
+    overallScore: 0,
     detailedScore: [],
     longReviewPreview: "",
     isDraft: false,
   });
-  const [animeDetails, setAnimeDetails] = useState<any>(null);
+  const [animeDetails, setAnimeDetails] = useState<any>();
   const [selectingAnime, setSelectingAnime] = useState<boolean>(!animeId);
   const [animeQuery, setAnimeQuery] = useState<string>("");
   const [animeResults, setAnimeResults] = useState<any[]>([]);
@@ -54,7 +65,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             animeId: data.animeId,
             comment: data.comment,
             longReview: data.longReview,
-            overallScore: data.overallScore,
+            overallScore: Number(data.overallScore),
             detailedScore: data.detailedScore,
             longReviewPreview: data.longReviewPreview,
             isDraft: data.isDraft,
@@ -126,7 +137,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   return (
     <form onSubmit={handleFormSubmit}>
       <div className="my-4 flex flex-col gap-4">
-        <div className="rounded-xl border-4 border-primary-300 p-2">
+        <div className="flex flex-col gap-2 rounded-xl border-4 border-primary-300 p-4">
           <h2 className="text-lg font-bold">Select anime</h2>
           <p className="text-foreground-400">Which anime are you reviewing?</p>
           {!selectingAnime ? (
@@ -196,6 +207,10 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
                             <AnimeResult
                               key={anime.node.id}
                               anime={anime.node}
+                              callback={(anime) => {
+                                setSelectingAnime(false);
+                                setAnimeDetails(camelize(anime));
+                              }}
                             />
                           );
                         })}
@@ -215,12 +230,86 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             </div>
           )}
         </div>
-        <Textarea
-          variant="faded"
-          labelPlacement="outside"
-          type="textarea"
-          label="Comment"
-        />
+        <div className="flex flex-col gap-4 rounded-xl border-4 border-danger-300 p-4">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-lg font-bold">Required section</h2>
+            <p className="text-foreground-400">
+              Please either leave a comment or rating.
+            </p>
+          </div>
+          <div>
+            <Textarea
+              value={formData.comment}
+              onValueChange={(text) =>
+                setFormData({ ...formData, comment: text })
+              }
+              variant="faded"
+              labelPlacement="outside"
+              type="textarea"
+              label="Comment"
+            />
+            <Progress
+              label="Characters"
+              showValueLabel
+              valueLabel={
+                formData.comment.length > commentMaxLength ? (
+                  <div className="text-danger-400">
+                    {formData.comment.length}/{commentMaxLength}
+                  </div>
+                ) : (
+                  `${formData.comment.length}/${commentMaxLength}`
+                )
+              }
+              value={formData.comment.length}
+              size="sm"
+              color={
+                formData.comment.length > commentMaxLength
+                  ? "danger"
+                  : "primary"
+              }
+              maxValue={commentMaxLength}
+            />
+          </div>
+          <div>
+            <Slider
+              label="Rating"
+              step={0.5}
+              maxValue={10}
+              value={formData.overallScore}
+              formatOptions={{
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+              }}
+              onChange={(value) =>
+                setFormData({ ...formData, overallScore: Number(value) })
+              }
+              classNames={{
+                label: "text-base mb-2",
+                value: "text-base mb-2 font-bold text-primary",
+              }}
+              endContent={
+                <Plus
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      overallScore: formData.overallScore + 1,
+                    })
+                  }
+                />
+              }
+              startContent={
+                <Minus
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      overallScore: formData.overallScore - 1,
+                    })
+                  }
+                />
+              }
+            />
+          </div>
+        </div>
       </div>
     </form>
   );
