@@ -1,6 +1,11 @@
 import User from "@/types/user";
 import _ from "lodash";
 
+const headers: HeadersInit = {
+  "Content-Type": "application.json",
+  "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,
+};
+
 /**
  * Converts the keys of an object to camel case recursively.
  *
@@ -76,11 +81,6 @@ export const getMalList = async (
   status?: animeStatus,
   sort?: animeListSort,
 ) => {
-  const headers: HeadersInit = {
-    "Content-Type": "application.json",
-    "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,
-  };
-
   const url = new URL(
     `https://api.myanimelist.net/v2/users/${malId}/animelist`,
   );
@@ -120,11 +120,6 @@ export const getMalList = async (
  * @return {Promise<any>} - A Promise that resolves to the details of the anime.
  */
 export const getAnimeDetails = async (animeId: number) => {
-  const headers: HeadersInit = {
-    "Content-Type": "application.json",
-    "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,
-  };
-
   const url = new URL(`https://api.myanimelist.net/v2/anime/${animeId}`);
   url.searchParams.set("fields", "main_picture,title");
 
@@ -133,6 +128,47 @@ export const getAnimeDetails = async (animeId: number) => {
 
     if (!response.ok) {
       throw new Error("Anime not found");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+/**
+ * Searches for anime based on the provided query.
+ *
+ * @param {string} query - The search query.
+ * @param {number} limit - The number of results to return. Default is 5.
+ * @param {number} offset - The offset for pagination. Default is 0.
+ * @param {string} fields - Optional fields to include in the response.
+ * @return {Promise<any>} A promise that resolves to the search results.
+ */
+export const searchAnime = async (
+  query: string,
+  limit: number = 5,
+  offset: number = 0,
+  fields?: string,
+) => {
+  const url = new URL("https://api.myanimelist.net/v2/anime");
+  url.searchParams.set("q", query);
+  url.searchParams.set("limit", limit.toString());
+  url.searchParams.set("offset", offset.toString());
+  if (fields) {
+    url.searchParams.set("fields", fields);
+  }
+  console.log(url);
+
+  try {
+    if (query.length < 3) {
+      throw new Error("Query must be at least 3 characters long.");
+    }
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+      throw new Error("Error searching animes");
     }
 
     const data = await response.json();
@@ -197,5 +233,22 @@ export const getMalListClient = async (
   if (sort) params.append("sort", sort.toString());
 
   const res = await fetch(url);
+  return await res.json();
+};
+
+export const searchAnimeClient = async (
+  query: string,
+  limit?: number,
+  offset?: number,
+  fields?: string,
+) => {
+  const url = "/api/mal/search";
+  const params = new URLSearchParams();
+  params.append("query", query);
+  if (limit) params.append("limit", limit.toString());
+  if (offset) params.append("offset", offset.toString());
+  if (fields) params.append("sort", fields);
+
+  const res = await fetch(url + "?" + params);
   return await res.json();
 };
