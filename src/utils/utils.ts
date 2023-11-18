@@ -1,6 +1,15 @@
 import User from "@/types/user";
 import _ from "lodash";
 
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+import type { ClassValue } from "clsx";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 const headers: HeadersInit = {
   "Content-Type": "application.json",
   "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,

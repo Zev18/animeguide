@@ -1,6 +1,7 @@
 "use client";
 
 import { userAtom } from "@/atoms";
+import { detailedScore } from "@/types/detailedScore";
 import supabase from "@/utils/supabaseClient";
 import {
   camelize,
@@ -19,11 +20,12 @@ import {
 import { useAtom } from "jotai";
 import { debounce } from "lodash";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { Minus, Plus, Search } from "react-feather";
+import React, { useCallback, useEffect, useState } from "react";
+import { Star } from "react-feather";
 import InfiniteScroll from "react-infinite-scroll-component";
 import AnimeResult from "./AnimeResult";
-import { comment } from "postcss";
+import DetailedScoreSelect from "./DetailedScoreSelect";
+import LongReviewEditor from "./LongReviewEditor";
 
 export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const commentMaxLength = 250;
@@ -38,7 +40,14 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     comment: "",
     longReview: "",
     overallScore: 0,
-    detailedScore: [],
+    detailedScore: {
+      plot: 0,
+      characters: 0,
+      emotion: 0,
+      accessibility: 0,
+      audiovisual: 0,
+      originality: 0,
+    },
     longReviewPreview: "",
     isDraft: false,
   });
@@ -86,6 +95,20 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     if (!animeDetails) fetchAnimeDetails();
   }, [reviewId, animeId, formData, animeDetails]);
 
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
+  const updateDetailedScore = useCallback((scores: detailedScore) => {
+    setFormData({ ...formData, detailedScore: scores });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const updateLongReview = useCallback((reviewText: string) => {
+    setFormData({ ...formData, longReview: reviewText });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const fetchNextAnimeResults = async () => {
     if (!nextResults) return;
     console.log(nextResults);
@@ -132,7 +155,6 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission, you can send the formData to the server or perform other actions here.
   };
   return (
     <form onSubmit={handleFormSubmit}>
@@ -165,17 +187,13 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             <div className="my-2">
               <Input
                 autoComplete="off"
-                label="Anime title"
+                isClearable
+                label="Search anime"
                 value={animeQuery}
                 onValueChange={handleAnimeQueryChange}
                 variant="faded"
-                endContent={
-                  <div className="flex h-full items-center text-default-500">
-                    <Search size={16} />
-                  </div>
-                }
               />
-              <div className="my-4 h-fit overflow-y-scroll rounded-lg border-2 border-default-200 bg-default-100">
+              <div className="mt-4 h-fit overflow-y-scroll rounded-lg border-2 border-default-200 bg-default-100">
                 {animeQuery.length > 2 ? (
                   <>
                     {animeResults?.length > 0 ? (
@@ -234,7 +252,8 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
           <div className="flex flex-col gap-2">
             <h2 className="text-lg font-bold">Required section</h2>
             <p className="text-foreground-400">
-              Please either leave a comment or rating.
+              Please either leave a comment or rating. Only ratings above zero
+              will be counted.
             </p>
           </div>
           <div>
@@ -248,27 +267,29 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
               type="textarea"
               label="Comment"
             />
-            <Progress
-              label="Characters"
-              showValueLabel
-              valueLabel={
-                formData.comment.length > commentMaxLength ? (
-                  <div className="text-danger-400">
-                    {formData.comment.length}/{commentMaxLength}
-                  </div>
-                ) : (
-                  `${formData.comment.length}/${commentMaxLength}`
-                )
-              }
-              value={formData.comment.length}
-              size="sm"
-              color={
-                formData.comment.length > commentMaxLength
-                  ? "danger"
-                  : "primary"
-              }
-              maxValue={commentMaxLength}
-            />
+            {formData.comment.length > 0 && (
+              <Progress
+                label="Characters"
+                showValueLabel
+                valueLabel={
+                  formData.comment.length > commentMaxLength ? (
+                    <div className="text-danger-400">
+                      {formData.comment.length}/{commentMaxLength}
+                    </div>
+                  ) : (
+                    `${formData.comment.length}/${commentMaxLength}`
+                  )
+                }
+                value={formData.comment.length}
+                size="sm"
+                color={
+                  formData.comment.length > commentMaxLength
+                    ? "danger"
+                    : "primary"
+                }
+                maxValue={commentMaxLength}
+              />
+            )}
           </div>
           <div>
             <Slider
@@ -288,28 +309,40 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
                 value: "text-base mb-2 font-bold text-primary",
               }}
               endContent={
-                <Plus
+                <Star
+                  className="text-primary"
                   onClick={() =>
                     setFormData({
                       ...formData,
-                      overallScore: formData.overallScore + 1,
+                      overallScore: Math.min(10, formData.overallScore + 0.5),
                     })
                   }
                 />
               }
               startContent={
-                <Minus
+                <Star
+                  className="text-primary"
                   onClick={() =>
                     setFormData({
                       ...formData,
-                      overallScore: formData.overallScore - 1,
+                      overallScore: Math.max(0, formData.overallScore - 0.5),
                     })
                   }
+                  size={16}
+                  strokeWidth={3}
                 />
               }
             />
           </div>
         </div>
+        <DetailedScoreSelect
+          updateScore={updateDetailedScore}
+          defaultScores={formData?.detailedScore}
+        />
+        <LongReviewEditor
+          updateText={updateLongReview}
+          defaultText={formData?.longReview}
+        />
       </div>
     </form>
   );

@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 const { nextui } = require("@nextui-org/react");
 import type { Config } from "tailwindcss";
 
@@ -22,6 +23,6 @@ const config: Config = {
   },
 
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui(), require("@tailwindcss/typography")],
 };
 export default config;

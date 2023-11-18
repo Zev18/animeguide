@@ -9,6 +9,7 @@ import Film from "../assets/vector/radar-chart/film";
 import Heart from "../assets/vector/radar-chart/heart";
 import Palette from "../assets/vector/radar-chart/palette";
 import People from "../assets/vector/radar-chart/people";
+import { detailedScore } from "@/types/detailedScore";
 
 const radar = require("svg-radar-chart");
 const stringify = require("virtual-dom-stringify");
@@ -19,7 +20,7 @@ export default function RadarChart({
   iconSize = 10,
   pressable = true,
 }: {
-  data: Record<string, number>;
+  data: detailedScore;
   size?: number;
   iconSize?: number;
   pressable?: boolean;
@@ -60,7 +61,7 @@ export default function RadarChart({
   return pressable ? (
     <Popover>
       <PopoverTrigger>
-        <button>
+        <button className="w-min">
           <div className="relative m-3 text-default-400">
             {svg}
             <Book
@@ -96,7 +97,7 @@ export default function RadarChart({
       </PopoverContent>
     </Popover>
   ) : (
-    <div className="relative m-3 text-default-400">
+    <div className="relative m-3 w-min text-default-400">
       {svg}
       <Book
         className="absolute left-[50%] top-[.1rem] -translate-x-1/2 translate-y-[-100%]"
