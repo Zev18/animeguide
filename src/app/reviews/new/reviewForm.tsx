@@ -20,9 +20,10 @@ import {
 import { useAtom } from "jotai";
 import { debounce } from "lodash";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Star } from "react-feather";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { z } from "zod";
 import AnimeResult from "./AnimeResult";
 import DetailedScoreSelect from "./DetailedScoreSelect";
 import LongReviewEditor from "./LongReviewEditor";
@@ -31,6 +32,29 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const commentMaxLength = 250;
 
   const [user] = useAtom(userAtom);
+
+  const schema = z.object({
+    authorId: z.string({ required_error: "Author ID is required." }),
+    animeId: z.number({
+      required_error: "Please select an anime.",
+      invalid_type_error: "Please select an anime.",
+    }),
+    comment: z.string().nullable(),
+    longReview: z.string().nullable(),
+    overallScore: z.number().lte(10).nullable(),
+    detailedScore: z
+      .object({
+        plot: z.number().lte(10),
+        characters: z.number().lte(10),
+        emotion: z.number().lte(10),
+        accessibility: z.number().lte(10),
+        audiovisual: z.number().lte(10),
+        originality: z.number().lte(10),
+      })
+      .nullable(),
+    longReviewPreview: z.string().nullable(),
+    isDraft: z.boolean(),
+  });
 
   const params = useSearchParams();
   const animeId = Number(params.get("animeId"));
@@ -56,6 +80,26 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const [animeQuery, setAnimeQuery] = useState<string>("");
   const [animeResults, setAnimeResults] = useState<any[]>([]);
   const [nextResults, setNextResults] = useState<string | null>(null);
+
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const isFormValid = useMemo(() => {
+    const result = schema.safeParse(formData);
+    return result.success;
+  }, [formData, schema]);
+
+  useEffect(() => {
+    if (!formData.overallScore && !formData.comment) {
+      setErrorMessage("Either a score or comment is required.");
+    } else {
+      const result = schema.safeParse(formData);
+      if (result.success) {
+        setErrorMessage("");
+      } else {
+        setErrorMessage(result.error.issues[0].message);
+      }
+    }
+  }, [formData, schema]);
 
   useEffect(() => {
     if (reviewId && !formData) {
@@ -97,17 +141,25 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
 
   useEffect(() => {
     console.log(formData);
-  }, [formData]);
+    console.log("Error message: " + errorMessage);
+  }, [formData, errorMessage]);
 
   const updateDetailedScore = useCallback((scores: detailedScore) => {
-    setFormData({ ...formData, detailedScore: scores });
+    setFormData((prevFormData) => ({ ...prevFormData, detailedScore: scores }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateLongReview = useCallback((reviewText: string) => {
-    setFormData({ ...formData, longReview: reviewText });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const updateLongReview = useCallback(
+    (reviewHtml: string, reviewText: string) => {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        longReview: reviewHtml,
+        longReviewPreview: reviewText,
+      }));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [],
+  );
 
   const fetchNextAnimeResults = async () => {
     if (!nextResults) return;
@@ -161,7 +213,9 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
       <div className="my-4 flex flex-col gap-4">
         <div className="flex flex-col gap-2 rounded-xl border-4 border-primary-300 p-4">
           <h2 className="text-lg font-bold">Select anime</h2>
-          <p className="text-foreground-400">Which anime are you reviewing?</p>
+          <p className="text-sm text-foreground-400">
+            Which anime are you reviewing?
+          </p>
           {!selectingAnime ? (
             <div className="my-2 flex items-center justify-between gap-2 rounded-lg border-2 border-default-200 bg-default-100 p-2">
               {animeDetails ? (
@@ -193,7 +247,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
                 onValueChange={handleAnimeQueryChange}
                 variant="faded"
               />
-              <div className="mt-4 h-fit overflow-y-scroll rounded-lg border-2 border-default-200 bg-default-100">
+              <div className="mt-4 h-fit rounded-lg border-2 border-default-200 bg-default-100">
                 {animeQuery.length > 2 ? (
                   <>
                     {animeResults?.length > 0 ? (
@@ -228,6 +282,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
                               callback={(anime) => {
                                 setSelectingAnime(false);
                                 setAnimeDetails(camelize(anime));
+                                setFormData({ ...formData, animeId: anime.id });
                               }}
                             />
                           );
@@ -251,7 +306,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
         <div className="flex flex-col gap-4 rounded-xl border-4 border-danger-300 p-4">
           <div className="flex flex-col gap-2">
             <h2 className="text-lg font-bold">Required section</h2>
-            <p className="text-foreground-400">
+            <p className="text-sm text-foreground-400">
               Please either leave a comment or rating. Only ratings above zero
               will be counted.
             </p>
@@ -266,10 +321,12 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
               labelPlacement="outside"
               type="textarea"
               label="Comment"
+              classNames={{ input: "text-base" }}
             />
             {formData.comment.length > 0 && (
               <Progress
                 label="Characters"
+                className="mt-2"
                 showValueLabel
                 valueLabel={
                   formData.comment.length > commentMaxLength ? (
@@ -343,6 +400,19 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
           updateText={updateLongReview}
           defaultText={formData?.longReview}
         />
+        <div className="my-4 flex w-full flex-row-reverse items-center justify-between gap-4">
+          <Button
+            variant="shadow"
+            color="primary"
+            className="min-w-max"
+            isDisabled={!isFormValid}
+          >
+            Create Review
+          </Button>
+          {errorMessage && (
+            <p className="shrink text-sm text-danger">{errorMessage}</p>
+          )}
+        </div>
       </div>
     </form>
   );

@@ -6,7 +6,7 @@ export default function LongReviewEditor({
   updateText,
   defaultText,
 }: {
-  updateText: (text: string) => void;
+  updateText: (html: string, text: string) => void;
   defaultText?: string;
 }) {
   const [enabled, setEnabled] = useState(false);
@@ -17,7 +17,7 @@ export default function LongReviewEditor({
       <div className="flex w-full justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold">Detailed review</h2>
-          <p className="text-sm text-foreground-500">
+          <p className="text-sm text-foreground-400">
             Write a full-length review with full markdown support.
           </p>
         </div>

@@ -58,7 +58,7 @@ export default function DetailedScoreSelect({
       <div className="flex w-full justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold">Detailed score</h2>
-          <p className="text-sm text-foreground-500">
+          <p className="text-sm text-foreground-400">
             Score the anime in different categories for a more detailed
             analysis.
           </p>
