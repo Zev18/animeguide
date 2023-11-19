@@ -3,20 +3,16 @@
 import placeholder from "@/assets/images/placeholder.jpg";
 import { userAtom as userAtomTemplate } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
-import { Menu } from "@headlessui/react";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 import { useAtom } from "jotai";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownSection,
-  DropdownItem,
-  Button,
-} from "@nextui-org/react";
-import Link from "next/link";
 
 export default function Login({
   user,

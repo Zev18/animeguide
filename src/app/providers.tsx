@@ -9,6 +9,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <Provider>
+      {/* @ts-ignore*/}
       <NextUIProvider navigate={router.push}>{children}</NextUIProvider>
     </Provider>
   );
