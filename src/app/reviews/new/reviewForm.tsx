@@ -19,7 +19,7 @@ import {
 } from "@nextui-org/react";
 import { useAtom } from "jotai";
 import { debounce } from "lodash";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Star } from "react-feather";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -27,11 +27,15 @@ import { z } from "zod";
 import AnimeResult from "./AnimeResult";
 import DetailedScoreSelect from "./DetailedScoreSelect";
 import LongReviewEditor from "./LongReviewEditor";
+import { redirect } from "next/navigation";
 
 export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const commentMaxLength = 250;
 
+  const router = useRouter();
+
   const [user] = useAtom(userAtom);
+  const [detailedScoreId, setDetailedScoreId] = useState<number | null>(null);
 
   const schema = z.object({
     authorId: z.string({ required_error: "Author ID is required." }),
@@ -81,7 +85,11 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const [animeResults, setAnimeResults] = useState<any[]>([]);
   const [nextResults, setNextResults] = useState<string | null>(null);
 
+  const [submitting, setSubmitting] = React.useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const [detailedScoreEnabled, setDetailedScoreEnabled] = useState(false);
+  const [detailedReviewEnabled, setDetailedReviewEnabled] = useState(false);
 
   const isFormValid = useMemo(() => {
     const result = schema.safeParse(formData);
@@ -109,9 +117,18 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
           supabase.from("reviews").select("*").eq("id", reviewId).single(),
         );
 
-        if (error) {
-          console.error("Error fetching review data:", error);
+        const { data: scoreData, error: scoreError } = await camelize(
+          supabase
+            .from("detailed_score")
+            .select("*")
+            .eq("review_id", data.id)
+            .single(),
+        );
+
+        if (error || scoreError) {
+          console.error("Error fetching review data:", error + scoreError);
         } else {
+          setDetailedScoreId(data.detailed_score);
           // Populate the form with data from the review
           setFormData({
             authorId: data.authorId,
@@ -119,7 +136,14 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             comment: data.comment,
             longReview: data.longReview,
             overallScore: Number(data.overallScore),
-            detailedScore: data.detailedScore,
+            detailedScore: {
+              plot: Number(scoreData.plot),
+              characters: Number(scoreData.characters),
+              emotion: Number(scoreData.emotion),
+              accessibility: Number(scoreData.accessibility),
+              audiovisual: Number(scoreData.audiovisual),
+              originality: Number(scoreData.originality),
+            },
             longReviewPreview: data.longReviewPreview,
             isDraft: data.isDraft,
           });
@@ -138,11 +162,6 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     };
     if (!animeDetails) fetchAnimeDetails();
   }, [reviewId, animeId, formData, animeDetails]);
-
-  useEffect(() => {
-    console.log(formData);
-    console.log("Error message: " + errorMessage);
-  }, [formData, errorMessage]);
 
   const updateDetailedScore = useCallback((scores: detailedScore) => {
     setFormData((prevFormData) => ({ ...prevFormData, detailedScore: scores }));
@@ -195,19 +214,71 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     debouncedApiCall(text);
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    const finalData = {
+      ...formData,
+      detailedScore: detailedScoreEnabled ? formData.detailedScore : null,
+      longReview: detailedReviewEnabled ? formData.longReview : null,
+      author_id: user?.id,
+    };
+    let finalReviewId = reviewId;
+    if (!finalData.animeId || !finalData.authorId) return;
+    try {
+      if (reviewId) {
+        const { error } = await supabase.from("reviews").upsert([
+          {
+            id: reviewId,
+            comment: finalData.comment,
+            overall_score: finalData.overallScore,
+            long_review: finalData.longReview,
+            long_review_preview: finalData.longReviewPreview,
+            is_draft: finalData.isDraft,
+            anime_id: finalData.animeId,
+            author_id: finalData.authorId,
+          },
+        ]);
+        if (error) throw new Error("Error upserting review.");
+      } else {
+        const { data, error } = await supabase
+          .from("reviews")
+          .insert([
+            {
+              comment: finalData.comment,
+              overall_score: finalData.overallScore,
+              long_review: finalData.longReview,
+              long_review_preview: finalData.longReviewPreview,
+              is_draft: finalData.isDraft,
+              anime_id: finalData.animeId,
+              author_id: finalData.authorId,
+            },
+          ])
+          .select()
+          .single();
+        if (error) throw new Error("Error inserting review.");
+        finalReviewId = data.id;
+      }
+      if (!finalReviewId) throw new Error("Error retrieving ID.");
+      if (detailedScoreId) {
+        const { error } = await supabase
+          .from("detailed_score")
+          .update({ ...finalData.detailedScore, review_id: finalReviewId })
+          .eq("id", detailedScoreId);
+        if (error) throw new Error("Error updating detailed score.");
+      } else if (finalData.detailedScore) {
+        const { error } = await supabase
+          .from("detailed_score")
+          .insert({ ...finalData.detailedScore, review_id: finalReviewId });
+        if (error) throw new Error("Error inserting detailed score.");
+      }
+      router.push(`/reviews/${finalReviewId}`);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   };
+
   return (
     <form onSubmit={handleFormSubmit}>
       <div className="my-4 flex flex-col gap-4">
@@ -334,7 +405,9 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
                       {formData.comment.length}/{commentMaxLength}
                     </div>
                   ) : (
-                    `${formData.comment.length}/${commentMaxLength}`
+                    <p>
+                      {formData.comment.length}/{commentMaxLength}
+                    </p>
                   )
                 }
                 value={formData.comment.length}
@@ -395,10 +468,12 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
         <DetailedScoreSelect
           updateScore={updateDetailedScore}
           defaultScores={formData?.detailedScore}
+          isActive={(selected) => setDetailedScoreEnabled(selected)}
         />
         <LongReviewEditor
           updateText={updateLongReview}
           defaultText={formData?.longReview}
+          isActive={(selected) => setDetailedReviewEnabled(selected)}
         />
         <div className="my-4 flex w-full flex-row-reverse items-center justify-between gap-4">
           <Button
@@ -406,6 +481,8 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             color="primary"
             className="min-w-max"
             isDisabled={!isFormValid}
+            isLoading={submitting}
+            type="submit"
           >
             Create Review
           </Button>

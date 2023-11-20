@@ -24,8 +24,9 @@ export default async function Review({ params }: { params: { id: string } }) {
         {review.comment}
       </h1>
       <div className="text-justify">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]} />
-        {markdown.description}
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+          {markdown.description}
+        </ReactMarkdown>
       </div>
 
       {/*JSON.stringify(review, null, 2)*/}

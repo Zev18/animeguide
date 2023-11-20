@@ -40,9 +40,11 @@ const categoryDescriptions: Record<string, string> = {
 export default function DetailedScoreSelect({
   updateScore,
   defaultScores,
+  isActive,
 }: {
   updateScore: (scores: detailedScore) => void;
   defaultScores?: detailedScore;
+  isActive?: (selected: boolean) => void;
 }) {
   const [enabled, setEnabled] = useState(false);
   const [scores, setScores] = useState<detailedScore>(
@@ -63,7 +65,12 @@ export default function DetailedScoreSelect({
             analysis.
           </p>
         </div>
-        <Switch isSelected={enabled} onValueChange={setEnabled} />
+        <Switch
+          isSelected={enabled}
+          onValueChange={(value) => {
+            setEnabled(value), isActive?.(value);
+          }}
+        />
       </div>
       {enabled && (
         <div className="flex flex-col gap-4">
@@ -128,11 +135,11 @@ export default function DetailedScoreSelect({
                 {Object.keys(scores).map((key: string) => (
                   <li key={key} className="flex gap-2">
                     <ChartIcon
-                      className="m-2 min-w-max text-primary"
+                      className="m-1 mx-2 max-h-min min-w-max text-primary"
                       name={categoriesToIcon[key]}
                     />
                     <p className="grow text-foreground-500">
-                      <span className="text-foreground">
+                      <span className="mr-2 text-foreground">
                         {capitalize(key)}:
                       </span>{" "}
                       {categoryDescriptions[key]}

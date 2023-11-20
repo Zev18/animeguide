@@ -5,9 +5,11 @@ import { Suspense, useState } from "react";
 export default function LongReviewEditor({
   updateText,
   defaultText,
+  isActive,
 }: {
   updateText: (html: string, text: string) => void;
   defaultText?: string;
+  isActive?: (selected: boolean) => void;
 }) {
   const [enabled, setEnabled] = useState(false);
   const [md, setMd] = useState(defaultText || "");
@@ -21,7 +23,12 @@ export default function LongReviewEditor({
             Write a full-length review with full markdown support.
           </p>
         </div>
-        <Switch isSelected={enabled} onValueChange={setEnabled} />
+        <Switch
+          isSelected={enabled}
+          onValueChange={(value) => {
+            setEnabled(value), isActive?.(value);
+          }}
+        />
       </div>
       {enabled && (
         <Suspense fallback={<Spinner />}>
