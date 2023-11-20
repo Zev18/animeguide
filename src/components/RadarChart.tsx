@@ -25,7 +25,10 @@ export default function RadarChart({
   iconSize?: number;
   pressable?: boolean;
 }) {
-  if (data) delete data.id;
+  if (data) {
+    delete data.id;
+    delete data.reviewId;
+  }
   const columns: Record<string, any> = { ...data };
   let graphData: Record<string, any> = { ...data, meta: { color: "#30ddff" } };
   for (const key in graphData) {

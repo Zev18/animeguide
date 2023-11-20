@@ -30,7 +30,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
   const { data: reviews } = camelize(
     await supabase
       .from("reviews")
-      .select("*, users!inner(username), detailed_score(*)")
+      .select("*, users!inner(username), detailed_score!inner(*)")
       .eq("users.username", username)
       .limit(10),
   );

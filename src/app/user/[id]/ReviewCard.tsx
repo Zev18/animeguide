@@ -59,7 +59,7 @@ export default function ReviewCard({
                 {stars.map((star) => star)}
               </div>
             </div>
-            <RadarChart size={65} data={review.detailedScore} />
+            <RadarChart size={65} data={review.detailedScore[0]} />
           </div>
         </div>
         <div className="flex flex-col">

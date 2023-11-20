@@ -16,6 +16,7 @@ export default function ProfileData({
 }) {
   const [user] = useAtom(userAtom);
 
+  // use the fetched data if the user is not logged in
   const userInfo = user?.username === username ? user : fetchedData;
 
   return (
