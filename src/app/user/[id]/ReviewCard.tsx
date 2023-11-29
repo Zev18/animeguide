@@ -20,7 +20,7 @@ export default function ReviewCard({
   const smallText = review?.anime.title && review.anime.title.length > 30;
 
   return (
-    <Card className="max-w-prose p-2">
+    <Card className="w-full max-w-prose p-2">
       <CardBody className="gap-2 sm:gap-4">
         <div className="flex w-full flex-col justify-between sm:flex-row sm:items-center sm:gap-4">
           <div className="flex max-h-min w-full items-center gap-4">

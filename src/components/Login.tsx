@@ -60,7 +60,7 @@ export default function Login({
             src={userData.avatarUrl ? userData.avatarUrl : placeholder}
             alt="profile Icon"
             fill
-            className="rounded-full border-4 border-slate-700 object-contain"
+            className="cursor-pointer rounded-full border-4 border-slate-700 object-contain"
           />
         </div>
       </DropdownTrigger>

@@ -20,7 +20,7 @@ const Editor = ({
     editorProps: {
       attributes: {
         class:
-          "prose dark:prose-invert block w-full rounded-b-lg border border-foreground-200 bg-foreground-50 p-4 border-t-0 text-sm focus:outline-none border-2 lg:prose-lg max-w-full min-h-[10rem] prose-img:rounded",
+          "prose dark:prose-invert block w-full rounded-b-lg border border-foreground-200 bg-foreground-50 p-4 border-t-0 text-sm focus:outline-none border-2 max-w-full min-h-[10rem] prose-img:rounded",
       },
     },
     onUpdate({ editor }) {

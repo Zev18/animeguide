@@ -280,189 +280,194 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div className="my-4 flex flex-col gap-4">
-        <div className="flex flex-col gap-2 rounded-xl border-4 border-primary-300 p-4">
-          <h2 className="text-lg font-bold">Select anime</h2>
-          <p className="text-sm text-foreground-400">
-            Which anime are you reviewing?
-          </p>
-          {!selectingAnime ? (
-            <div className="my-2 flex items-center justify-between gap-2 rounded-lg border-2 border-default-200 bg-default-100 p-2">
-              {animeDetails ? (
-                <div className="flex items-center">
-                  <Image
-                    alt={animeDetails.title}
-                    src={animeDetails.mainPicture.medium}
-                    width={40}
-                    classNames={{ img: "rounded-lg" }}
-                  />
-                  <p className="ml-2 text-primary">{animeDetails.title}</p>
-                </div>
-              ) : (
-                <div className="flex w-full justify-center">
-                  <Spinner />
-                </div>
-              )}
-              <Button variant="faded" onClick={() => setSelectingAnime(true)}>
-                Change
-              </Button>
-            </div>
-          ) : (
-            <div className="my-2">
-              <Input
-                autoComplete="off"
-                isClearable
-                label="Search anime"
-                value={animeQuery}
-                onValueChange={handleAnimeQueryChange}
-                variant="faded"
-              />
-              <div className="mt-4 h-fit rounded-lg border-2 border-default-200 bg-default-100">
-                {animeQuery.length > 2 ? (
-                  <>
-                    {animeResults?.length > 0 ? (
-                      <InfiniteScroll
-                        next={fetchNextAnimeResults}
-                        hasMore={!!nextResults && animeResults.length < 19}
-                        endMessage={
-                          animeResults.length > 19 ? (
-                            <p className="w-full p-4 text-center text-sm text-default-500">
-                              Still can&apos;t find it? Try a more specific
-                              search.
-                            </p>
-                          ) : (
-                            <p className="w-full p-4 text-center text-sm text-default-500">
-                              No more results.
-                            </p>
-                          )
-                        }
-                        loader={
-                          <div className="my-2 flex w-full justify-center">
-                            <Spinner size="sm" />
-                          </div>
-                        }
-                        height={300}
-                        dataLength={animeResults.length}
-                      >
-                        {animeResults.map((anime) => {
-                          return (
-                            <AnimeResult
-                              key={anime.node.id}
-                              anime={anime.node}
-                              callback={(anime) => {
-                                setSelectingAnime(false);
-                                setAnimeDetails(camelize(anime));
-                                setFormData({ ...formData, animeId: anime.id });
-                              }}
-                            />
-                          );
-                        })}
-                      </InfiniteScroll>
-                    ) : (
-                      <div className="flex w-full justify-center py-10">
-                        <Spinner />
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <p className="p-6 py-10 text-sm text-default-500">
-                    Search for an anime to see results.
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col gap-4 rounded-xl border-4 border-danger-300 p-4">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-lg font-bold">Required section</h2>
+    <form onSubmit={handleFormSubmit} className="m-4 flex justify-center">
+      <div className="my-4 flex w-full max-w-4xl flex-col gap-4">
+        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="flex flex-col gap-2 rounded-xl border-4 border-primary-300 p-4">
+            <h2 className="text-lg font-bold">Select anime</h2>
             <p className="text-sm text-foreground-400">
-              Please either leave a comment or rating. Only ratings above zero
-              will be counted.
+              Which anime are you reviewing?
             </p>
-          </div>
-          <div>
-            <Textarea
-              value={formData.comment}
-              onValueChange={(text) =>
-                setFormData({ ...formData, comment: text })
-              }
-              variant="faded"
-              labelPlacement="outside"
-              type="textarea"
-              label="Comment"
-              classNames={{ input: "text-base" }}
-            />
-            {formData.comment.length > 0 && (
-              <Progress
-                label="Characters"
-                className="mt-2"
-                showValueLabel
-                valueLabel={
-                  formData.comment.length > commentMaxLength ? (
-                    <div className="text-danger-400">
-                      {formData.comment.length}/{commentMaxLength}
-                    </div>
+            {!selectingAnime ? (
+              <div className="my-2 flex items-center justify-between gap-2 rounded-lg border-2 border-default-200 bg-default-100 p-2">
+                {animeDetails ? (
+                  <div className="flex items-center">
+                    <Image
+                      alt={animeDetails.title}
+                      src={animeDetails.mainPicture.medium}
+                      width={40}
+                      classNames={{ img: "rounded-lg" }}
+                    />
+                    <p className="ml-2 text-primary">{animeDetails.title}</p>
+                  </div>
+                ) : (
+                  <div className="flex w-full justify-center">
+                    <Spinner />
+                  </div>
+                )}
+                <Button variant="faded" onClick={() => setSelectingAnime(true)}>
+                  Change
+                </Button>
+              </div>
+            ) : (
+              <div className="my-2">
+                <Input
+                  autoComplete="off"
+                  isClearable
+                  label="Search anime"
+                  value={animeQuery}
+                  onValueChange={handleAnimeQueryChange}
+                  variant="faded"
+                />
+                <div className="mt-4 h-fit rounded-lg border-2 border-default-200 bg-default-100">
+                  {animeQuery.length > 2 ? (
+                    <>
+                      {animeResults?.length > 0 ? (
+                        <InfiniteScroll
+                          next={fetchNextAnimeResults}
+                          hasMore={!!nextResults && animeResults.length < 19}
+                          endMessage={
+                            animeResults.length > 19 ? (
+                              <p className="w-full p-4 text-center text-sm text-default-500">
+                                Still can&apos;t find it? Try a more specific
+                                search.
+                              </p>
+                            ) : (
+                              <p className="w-full p-4 text-center text-sm text-default-500">
+                                No more results.
+                              </p>
+                            )
+                          }
+                          loader={
+                            <div className="my-2 flex w-full justify-center">
+                              <Spinner size="sm" />
+                            </div>
+                          }
+                          height={300}
+                          dataLength={animeResults.length}
+                        >
+                          {animeResults.map((anime) => {
+                            return (
+                              <AnimeResult
+                                key={anime.node.id}
+                                anime={anime.node}
+                                callback={(anime) => {
+                                  setSelectingAnime(false);
+                                  setAnimeDetails(camelize(anime));
+                                  setFormData({
+                                    ...formData,
+                                    animeId: anime.id,
+                                  });
+                                }}
+                              />
+                            );
+                          })}
+                        </InfiniteScroll>
+                      ) : (
+                        <div className="flex w-full justify-center py-10">
+                          <Spinner />
+                        </div>
+                      )}
+                    </>
                   ) : (
-                    <p>
-                      {formData.comment.length}/{commentMaxLength}
+                    <p className="p-6 py-10 text-sm text-default-500">
+                      Search for an anime to see results.
                     </p>
-                  )
-                }
-                value={formData.comment.length}
-                size="sm"
-                color={
-                  formData.comment.length > commentMaxLength
-                    ? "danger"
-                    : "primary"
-                }
-                maxValue={commentMaxLength}
-              />
+                  )}
+                </div>
+              </div>
             )}
           </div>
-          <div>
-            <Slider
-              label="Rating"
-              step={0.5}
-              maxValue={10}
-              value={formData.overallScore}
-              formatOptions={{
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1,
-              }}
-              onChange={(value) =>
-                setFormData({ ...formData, overallScore: Number(value) })
-              }
-              classNames={{
-                label: "text-base mb-2",
-                value: "text-base mb-2 font-bold text-primary",
-              }}
-              endContent={
-                <Star
-                  className="text-primary"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      overallScore: Math.min(10, formData.overallScore + 0.5),
-                    })
+          <div className="flex flex-col gap-4 rounded-xl border-4 border-danger-300 p-4">
+            <div className="flex flex-col gap-2">
+              <h2 className="text-lg font-bold">Required section</h2>
+              <p className="text-sm text-foreground-400">
+                Please either leave a comment or rating. Only ratings above zero
+                will be counted.
+              </p>
+            </div>
+            <div>
+              <Textarea
+                value={formData.comment}
+                onValueChange={(text) =>
+                  setFormData({ ...formData, comment: text })
+                }
+                variant="faded"
+                labelPlacement="outside"
+                type="textarea"
+                label="Comment"
+                classNames={{ input: "text-base" }}
+              />
+              {formData.comment.length > 0 && (
+                <Progress
+                  label="Characters"
+                  className="mt-2"
+                  showValueLabel
+                  valueLabel={
+                    formData.comment.length > commentMaxLength ? (
+                      <div className="text-danger-400">
+                        {formData.comment.length}/{commentMaxLength}
+                      </div>
+                    ) : (
+                      <p>
+                        {formData.comment.length}/{commentMaxLength}
+                      </p>
+                    )
                   }
-                />
-              }
-              startContent={
-                <Star
-                  className="text-primary"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      overallScore: Math.max(0, formData.overallScore - 0.5),
-                    })
+                  value={formData.comment.length}
+                  size="sm"
+                  color={
+                    formData.comment.length > commentMaxLength
+                      ? "danger"
+                      : "primary"
                   }
-                  size={16}
-                  strokeWidth={3}
+                  maxValue={commentMaxLength}
                 />
-              }
-            />
+              )}
+            </div>
+            <div>
+              <Slider
+                label="Rating"
+                step={0.5}
+                maxValue={10}
+                value={formData.overallScore}
+                formatOptions={{
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                }}
+                onChange={(value) =>
+                  setFormData({ ...formData, overallScore: Number(value) })
+                }
+                classNames={{
+                  label: "text-base mb-2",
+                  value: "text-base mb-2 font-bold text-primary",
+                }}
+                endContent={
+                  <Star
+                    className="text-primary"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        overallScore: Math.min(10, formData.overallScore + 0.5),
+                      })
+                    }
+                  />
+                }
+                startContent={
+                  <Star
+                    className="text-primary"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        overallScore: Math.max(0, formData.overallScore - 0.5),
+                      })
+                    }
+                    size={16}
+                    strokeWidth={3}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
         <DetailedScoreSelect

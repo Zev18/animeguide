@@ -73,84 +73,87 @@ export default function DetailedScoreSelect({
         />
       </div>
       {enabled && (
-        <div className="flex flex-col gap-4">
-          <div className="mt-4 grid grid-cols-1 gap-4">
-            {Object.keys(scores).map((key: string) => (
-              <Slider
-                key={key}
-                label={capitalize(key)}
-                renderLabel={({ children, ...props }) => (
-                  <label {...props}>
-                    <div className="flex items-center gap-2 ">
-                      <ChartIcon
-                        className="text-primary"
-                        name={categoriesToIcon[key]}
-                      />{" "}
-                      {children}
-                    </div>
-                  </label>
-                )}
-                maxValue={10}
-                value={scores[key]}
-                onChange={(value) =>
-                  setScores({ ...scores, [key]: Number(value) })
-                }
-                classNames={{ label: "text-base", value: "text-base" }}
-                startContent={
-                  <Minus
-                    className="text-foreground-500"
-                    onClick={() =>
-                      setScores({
-                        ...scores,
-                        [key]: Math.max(0, scores[key] - 1),
-                      })
-                    }
-                  />
-                }
-                endContent={
-                  <Plus
-                    className="text-foreground-500"
-                    onClick={() =>
-                      setScores({
-                        ...scores,
-                        [key]: Math.min(10, scores[key] + 1),
-                      })
-                    }
-                  />
-                }
-              />
-            ))}
-          </div>
-          <Accordion
-            variant="bordered"
-            itemClasses={{ title: "italic text-foreground-500 text-base" }}
-          >
-            <AccordionItem key={1} title={"What are these categories?"}>
-              <p className="text-foreground-500">
-                Detailed scores are a way to rate an anime in a much more
-                nuanced way than a standard 1-10 scale. There are 6 categories
-                you can rate the anime in.
-              </p>
-              <ul className="my-4 grid grid-cols-1 gap-2">
-                {Object.keys(scores).map((key: string) => (
-                  <li key={key} className="flex gap-2">
-                    <ChartIcon
-                      className="m-1 mx-2 max-h-min min-w-max text-primary"
-                      name={categoriesToIcon[key]}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              {Object.keys(scores).map((key: string) => (
+                <Slider
+                  key={key}
+                  label={capitalize(key)}
+                  renderLabel={({ children, ...props }) => (
+                    <label {...props}>
+                      <div className="flex items-center gap-2 ">
+                        <ChartIcon
+                          className="text-primary"
+                          name={categoriesToIcon[key]}
+                        />{" "}
+                        {children}
+                      </div>
+                    </label>
+                  )}
+                  maxValue={10}
+                  value={scores[key]}
+                  onChange={(value) =>
+                    setScores({ ...scores, [key]: Number(value) })
+                  }
+                  classNames={{ label: "text-base", value: "text-base" }}
+                  startContent={
+                    <Minus
+                      className="text-foreground-500"
+                      onClick={() =>
+                        setScores({
+                          ...scores,
+                          [key]: Math.max(0, scores[key] - 1),
+                        })
+                      }
                     />
-                    <p className="grow text-foreground-500">
-                      <span className="mr-2 text-foreground">
-                        {capitalize(key)}:
-                      </span>{" "}
-                      {categoryDescriptions[key]}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </AccordionItem>
-          </Accordion>
-          <ChartIcon name="plot" />
-          <div className="my-4 flex justify-center">
+                  }
+                  endContent={
+                    <Plus
+                      className="text-foreground-500"
+                      onClick={() =>
+                        setScores({
+                          ...scores,
+                          [key]: Math.min(10, scores[key] + 1),
+                        })
+                      }
+                    />
+                  }
+                />
+              ))}
+            </div>
+            <Accordion
+              variant="bordered"
+              itemClasses={{
+                title: "italic text-foreground-500 text-base",
+              }}
+            >
+              <AccordionItem key={1} title={"What are these categories?"}>
+                <p className="text-foreground-500">
+                  Detailed scores are a way to rate an anime in a much more
+                  nuanced way than a standard 1-10 scale. There are 6 categories
+                  you can rate the anime in.
+                </p>
+                <ul className="my-4 grid grid-cols-1 gap-2">
+                  {Object.keys(scores).map((key: string) => (
+                    <li key={key} className="flex gap-2">
+                      <ChartIcon
+                        className="m-1 mx-2 max-h-min min-w-max text-primary"
+                        name={categoriesToIcon[key]}
+                      />
+                      <p className="grow text-foreground-500">
+                        <span className="mr-2 text-foreground">
+                          {capitalize(key)}:
+                        </span>{" "}
+                        {categoryDescriptions[key]}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <div className="my-4 flex justify-center self-start">
             <RadarChart
               data={scores}
               pressable={false}
