@@ -1,5 +1,4 @@
 import { supabaseServerComponentClient } from "@/utils/supabaseServer";
-import supabaseServer from "@/utils/supabaseServer";
 import { camelize, getAnimeDetails, getMalList } from "@/utils/utils";
 import { notFound } from "next/navigation";
 import ProfileData from "./ProfileData";
