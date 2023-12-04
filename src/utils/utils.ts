@@ -128,9 +128,13 @@ export const getMalList = async (
  * @param {number} animeId - The ID of the anime to retrieve details for.
  * @return {Promise<any>} - A Promise that resolves to the details of the anime.
  */
-export const getAnimeDetails = async (animeId: number) => {
+export const getAnimeDetails = async (animeId: number, fields?: string) => {
   const url = new URL(`https://api.myanimelist.net/v2/anime/${animeId}`);
-  url.searchParams.set("fields", "main_picture,title");
+  let fieldString = "main_picture,title";
+
+  fields ? (fieldString += "," + fields) : fieldString;
+
+  url.searchParams.set("fields", fieldString);
 
   try {
     const response = await fetch(url, { headers });

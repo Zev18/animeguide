@@ -214,11 +214,22 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
     debouncedApiCall(text);
   };
 
+  const averageScore = (scores: detailedScore): number => {
+    if (!scores) return 0;
+    return (
+      Object.values(scores).reduce((a, b) => a + b, 0) /
+      Object.values(scores).length
+    );
+  };
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     const finalData = {
       ...formData,
+      overallScore: formData.overallScore
+        ? formData.overallScore
+        : averageScore(formData.detailedScore),
       detailedScore: detailedScoreEnabled ? formData.detailedScore : null,
       longReview: detailedReviewEnabled ? formData.longReview : null,
       author_id: user?.id,
@@ -280,9 +291,12 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="m-4 flex justify-center">
+    <form
+      onSubmit={handleFormSubmit}
+      className="my-4 flex justify-center sm:m-4"
+    >
       <div className="my-4 flex w-full max-w-4xl flex-col gap-4">
-        <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col gap-2 rounded-xl border-4 border-primary-300 p-4">
             <h2 className="text-lg font-bold">Select anime</h2>
             <p className="text-sm text-foreground-400">
