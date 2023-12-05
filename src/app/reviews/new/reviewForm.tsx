@@ -27,7 +27,6 @@ import { z } from "zod";
 import AnimeResult from "./AnimeResult";
 import DetailedScoreSelect from "./DetailedScoreSelect";
 import LongReviewEditor from "./LongReviewEditor";
-import { redirect } from "next/navigation";
 
 export default function ReviewForm({ reviewId }: { reviewId?: number }) {
   const commentMaxLength = 250;
@@ -58,6 +57,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
       .nullable(),
     longReviewPreview: z.string().nullable(),
     isDraft: z.boolean(),
+    updatedAt: z.date().optional(),
   });
 
   const params = useSearchParams();
@@ -182,7 +182,6 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
 
   const fetchNextAnimeResults = async () => {
     if (!nextResults) return;
-    console.log(nextResults);
     const params = new URLSearchParams(new URL(nextResults).search);
     const results = await searchAnimeClient(
       params.get("q")!,
@@ -190,24 +189,24 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
       Number(params.get("offset")),
       params.get("fields") || undefined,
     );
-    console.log(params.get("offset"));
 
-    console.log(results);
+    // Remove duplicates based on a unique identifier (e.g., 'id')
+    const uniqueResults = results.data.filter(
+      (result: Record<string, any>) =>
+        !animeResults.some((existingResult) => existingResult.id === result.id),
+    );
+
     setAnimeResults([...animeResults, ...results.data]);
     setNextResults(results.paging.next || null);
-    console.log(nextResults);
   };
 
-  const debouncedApiCall = debounce(
-    async (text: string, limit?: number, offset?: number, fields?: string) => {
-      const results = await searchAnimeClient(text);
-      setAnimeResults(results.data);
-      results.paging?.next !== undefined
-        ? setNextResults(results.paging.next)
-        : setNextResults(null);
-    },
-    500,
-  );
+  const debouncedApiCall = debounce(async (text: string) => {
+    const results = await searchAnimeClient(text);
+    setAnimeResults(results.data);
+    results.paging?.next !== undefined
+      ? setNextResults(results.paging.next)
+      : setNextResults(null);
+  }, 500);
 
   const handleAnimeQueryChange = async (text: string) => {
     setAnimeQuery(text);

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import Google from "@/assets/vector/google";
 
-export default function JustLogin({ redirect }: { redirect?: string | null }) {
+export default function JustLogin() {
   const router = useRouter();
 
   const signIn = async () => {
@@ -17,11 +17,8 @@ export default function JustLogin({ redirect }: { redirect?: string | null }) {
         },
       });
       const { data } = await response.json();
-      if (!redirect) {
-        router.push("/");
-      } else {
-        router.push(redirect);
-      }
+      if (!data?.url) throw new Error("No url returned");
+      router.push(data.url);
     } catch (error) {
       console.error(error);
     }

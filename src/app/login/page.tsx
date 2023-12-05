@@ -14,7 +14,7 @@ export default function Page() {
           Aren&apos;t you forgetting something?
         </h1>
         <p>Please log in or create an account first.</p>
-        <JustLogin redirect={redirect} />
+        <JustLogin />
       </div>
     </div>
   );
