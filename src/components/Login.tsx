@@ -4,13 +4,13 @@ import placeholder from "@/assets/images/placeholder.jpg";
 import { userAtom as userAtomTemplate } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
 import {
+  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
 import { useAtom } from "jotai";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -55,14 +55,11 @@ export default function Login({
   return user ? (
     <Dropdown>
       <DropdownTrigger>
-        <div className="relative h-12 w-12">
-          <Image
-            src={userData.avatarUrl ? userData.avatarUrl : placeholder}
-            alt="profile Icon"
-            fill
-            className="cursor-pointer rounded-full border-4 border-slate-700 object-contain"
-          />
-        </div>
+        <Avatar
+          src={userData.avatarUrl ? userData.avatarUrl : placeholder}
+          alt="profile Icon"
+          className="cursor-pointer rounded-full"
+        />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions">
         <DropdownItem

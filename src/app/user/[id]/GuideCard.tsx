@@ -1,8 +1,6 @@
-import React from "react";
 import { Card, CardBody, Image } from "@nextui-org/react";
-import { capitalize } from "lodash";
-import { List, Bookmark } from "react-feather";
 import Link from "next/link";
+import { Bookmark, List } from "react-feather";
 
 export default function GuideCard({ guide }: { guide: Record<string, any> }) {
   const iconSize = 13;
@@ -17,7 +15,7 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
       <CardBody className="p-4">
         <div className="flex w-full justify-between gap-8">
           <div className="flex flex-col gap-4">
-            <p className="text-xl text-primary">{capitalize(guide.title)}</p>
+            <p className="text-xl text-primary">{guide.title}</p>
             <p className="text-sm text-foreground-500">{guide.description}</p>
             <div className="flex items-center gap-4 text-tiny text-foreground-500">
               <div className="flex items-center gap-1">
@@ -41,7 +39,7 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                   src={anime.mainPicture.medium}
                 />
               ))}
-            <div className="absolute bottom-0 z-10 flex h-full w-full justify-end bg-gradient-to-l from-transparent to-background"></div>
+            <div className="absolute bottom-0 z-10 flex h-full w-full justify-end bg-gradient-to-l from-transparent to-background" />
           </div>
         </div>
       </CardBody>

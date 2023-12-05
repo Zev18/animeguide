@@ -1,13 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Button, Tooltip } from "@nextui-org/react";
-import { BookmarkCheck, BookmarkX } from "lucide-react";
-import { useAtom } from "jotai";
 import { userAtom } from "@/atoms";
-import { usePathname, useRouter } from "next/navigation";
 import supabase from "@/utils/supabaseClient";
-import { Edit, Link } from "react-feather";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
+import { useAtom } from "jotai";
+import { BookmarkCheck, BookmarkX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Edit, Trash2 } from "react-feather";
 
 export default function GuideActions({
   guideInfo,
@@ -18,8 +27,7 @@ export default function GuideActions({
   const [isSaved, setIsSaved] = useState(false);
   const isCreator = guideInfo.users.username == user?.username;
 
-  const [pathname, setPathname] = useState("");
-  const slug = usePathname();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const router = useRouter();
 
@@ -42,20 +50,6 @@ export default function GuideActions({
 
     getSavedStatus();
   }, [user, guideInfo]);
-
-  useEffect(() => {
-    if (window && !pathname) {
-      setPathname(window.location.origin + slug);
-    }
-  }, [pathname, slug]);
-
-  const copyToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(pathname);
-    } catch (err) {
-      console.error("Unable to copy to clipboard", err);
-    }
-  };
 
   const handleSave = async () => {
     if (!user) {
@@ -82,38 +76,76 @@ export default function GuideActions({
     }
   };
 
-  return (
-    <div className="flex justify-end gap-1">
-      <Tooltip content="Copy link" closeDelay={0} delay={300} size="sm">
+  const deleteGuide = async () => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("anime_guides")
+      .delete()
+      .eq("id", guideInfo.id);
+    if (error) {
+      console.log(error);
+    } else {
+      router.push(`/user/${user.username}`);
+    }
+  };
+
+  return isCreator ? (
+    <div className="flex gap-1">
+      <Tooltip content="Edit" delay={300} closeDelay={0}>
         <Button
-          isIconOnly
           variant="light"
-          startContent={<Link size={20} />}
-          onClick={copyToClipboard}
-        />
-      </Tooltip>
-      {isCreator ? (
-        <>
-          <Button
-            isIconOnly
-            variant="light"
-            color="primary"
-            startContent={<Edit size={20} />}
-            onClick={() => router.push(`/guides/${guideInfo.id}/edit`)}
-          />
-        </>
-      ) : (
-        <Button
           color="primary"
-          variant={isSaved ? "bordered" : "shadow"}
-          startContent={
-            isSaved ? <BookmarkX size={20} /> : <BookmarkCheck size={20} />
-          }
-          onClick={handleSave}
+          startContent={<Edit size={20} />}
+          onPress={() => router.push(`/guides/${guideInfo.id}/edit`)}
         >
-          {isSaved ? "Unsave" : "Save"}
+          Edit
         </Button>
-      )}
+      </Tooltip>
+      <Tooltip content="Delete" delay={300} closeDelay={0}>
+        <Button
+          variant="light"
+          color="danger"
+          startContent={<Trash2 size={20} />}
+          onPress={onOpen}
+        >
+          Delete
+        </Button>
+      </Tooltip>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Delete {guideInfo.title}?</ModalHeader>
+              <ModalBody>This can&apos;t be undone.</ModalBody>
+              <ModalFooter>
+                <Button color="primary" variant="flat" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    onClose();
+                    deleteGuide();
+                  }}
+                >
+                  Delete
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
+  ) : (
+    <Button
+      color="primary"
+      variant={isSaved ? "bordered" : "shadow"}
+      startContent={
+        isSaved ? <BookmarkX size={20} /> : <BookmarkCheck size={20} />
+      }
+      onClick={handleSave}
+    >
+      {isSaved ? "Unsave" : "Save"}
+    </Button>
   );
 }

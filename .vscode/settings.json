@@ -14,5 +14,6 @@
     "userlist",
     "watchlist",
     "webp"
-  ]
+  ],
+  "conventionalCommits.scopes": ["Guides"]
 }

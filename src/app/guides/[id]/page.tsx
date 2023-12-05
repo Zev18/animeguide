@@ -1,6 +1,6 @@
 import { supabaseServerComponentClient } from "@/utils/supabaseServer";
 import { camelize, getAnimeDetails } from "@/utils/utils";
-import { Avatar, Button } from "@nextui-org/react";
+import { Avatar, Button, Chip } from "@nextui-org/react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Bookmark, Clock, Eye, List } from "react-feather";
@@ -8,17 +8,20 @@ import AnimeList from "./AnimeList";
 import GuideActions from "./GuideActions";
 import { Database } from "../../../../database.types";
 import ViewsTracker from "./ViewsTracker";
+import CopyLink from "@/components/CopyLink";
 
 export default async function Guide({ params }: { params: { id: string } }) {
   const supabase = await supabaseServerComponentClient<Database>();
 
-  const { data: guide } = camelize(
+  const { data: guide, error } = camelize(
     await supabase
       .from("anime_guides")
-      .select("*, users!inner(*)")
+      .select("*, users!inner(*), categories(category)")
       .eq("id", params.id)
       .single(),
   );
+
+  if (error) console.log(error);
 
   const { data: animes } = camelize(
     await supabase
@@ -26,6 +29,8 @@ export default async function Guide({ params }: { params: { id: string } }) {
       .select("anime_id, order, date_added")
       .eq("guide_id", params.id),
   );
+
+  console.log(guide);
 
   if (animes) {
     const animeList: Record<string, any>[] = [];
@@ -58,24 +63,25 @@ export default async function Guide({ params }: { params: { id: string } }) {
 
   guide.userCount = userCount || 0;
 
-  // const { error } = await supabase.rpc("increment_views", {
-  //   guide_id: guide.id,
-  // });
-  // if (error) console.log(error);
-
-  console.log(guide);
-  console.log(guide.animeList);
-  console.log(users);
-  console.log(userCount);
-
   return (
     <div className="flex justify-center">
       <div className="flex w-full max-w-4xl flex-col items-center gap-4">
         <div className="w-full">
           <div className="flex w-full flex-col gap-4 md:flex-row md:justify-between">
             <div className="flex flex-col">
-              <h1 className="text-2xl font-bold">{guide.title}</h1>
-              <p className="text-foreground-400">{guide.description}</p>
+              <div className="flex items-center gap-2">
+                <h1 className="items-center text-2xl font-bold">
+                  {guide.title}
+                </h1>
+                {guide.categories && (
+                  <Link href={`/categories/${guide.categories.category}`}>
+                    <Chip size="sm" variant="flat" color="primary">
+                      {guide.categories.category}
+                    </Chip>
+                  </Link>
+                )}
+                <CopyLink />
+              </div>
               <ViewsTracker guideId={guide.id} />
             </div>
             <div className="flex items-center gap-4 md:flex-row-reverse">
@@ -104,6 +110,7 @@ export default async function Guide({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
+          <p className="my-2 text-foreground-400">{guide.description}</p>
           <div className="flex w-full justify-between">
             <div className="my-2 flex gap-4">
               <div className="flex items-center gap-2 text-foreground-500">

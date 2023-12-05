@@ -20,7 +20,7 @@ export default function AnimeCard({ anime }: { anime: anime }) {
             {anime.title}
           </p>
           {anime.avgScore ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-self-center">
               <p className="text-tiny italic text-foreground-500">Avg</p>
               <div className="flex items-center gap-1">
                 <Star className="text-primary" size={14} />
@@ -30,7 +30,7 @@ export default function AnimeCard({ anime }: { anime: anime }) {
           ) : (
             <div />
           )}
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-self-center">
             <p className="text-tiny italic text-foreground-500">Mal</p>
             <div className="flex items-center gap-1">
               <BarChart2 className="text-primary" size={16} />
