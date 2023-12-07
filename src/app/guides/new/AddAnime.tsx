@@ -58,7 +58,7 @@ export default function AddAnime({
         !animeResults.some((existingResult) => existingResult.id === result.id),
     );
 
-    setAnimeResults([...animeResults, ...results.data]);
+    setAnimeResults([...animeResults, ...uniqueResults]);
     setNextResults(results.paging.next || null);
   };
 
@@ -82,7 +82,10 @@ export default function AddAnime({
 
   return (
     <>
-      <h2 className="text-2xl font-bold">Animes</h2>
+      <div className="flex flex-col">
+        <h2 className="text-xl font-bold">Animes</h2>
+        <p className="text-foreground-400">Drag items to reorder them.</p>
+      </div>
       <Button
         variant="shadow"
         startContent={<Plus size={16} />}

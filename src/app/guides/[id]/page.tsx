@@ -27,10 +27,9 @@ export default async function Guide({ params }: { params: { id: string } }) {
     await supabase
       .from("guides_anime_map")
       .select("anime_id, order, date_added")
-      .eq("guide_id", params.id),
+      .eq("guide_id", params.id)
+      .order("order"),
   );
-
-  console.log(guide);
 
   if (animes) {
     const animeList: Record<string, any>[] = [];

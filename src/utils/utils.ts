@@ -265,3 +265,12 @@ export const searchAnimeClient = async (
   const res = await fetch(url + "?" + params);
   return await res.json();
 };
+
+export const formatDatePg = (date: Date): string => {
+  const isoString = date.toISOString();
+  // Format the string as required by PostgreSQL
+  const postgresTimestampTZ = isoString
+    .replace("T", " ")
+    .replace("Z", "+00:00");
+  return postgresTimestampTZ;
+};

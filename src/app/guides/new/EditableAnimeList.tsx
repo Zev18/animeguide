@@ -18,7 +18,16 @@ export default function EditableAnimeList({
     callback(newAnimes);
   };
 
-  return (
+  const deleteAnime = (anime: Record<string, any>) => {
+    const index = animes.findIndex((item) => item.id === anime.id);
+    if (index !== -1) {
+      const newAnimes = [...animes];
+      newAnimes.splice(index, 1);
+      callback(newAnimes);
+    }
+  };
+
+  return animes.length > 0 ? (
     <DragDropContext onDragEnd={handleOnDragEnd}>
       <Droppable droppableId="animes">
         {(provided) => (
@@ -40,7 +49,7 @@ export default function EditableAnimeList({
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                   >
-                    <AnimeCard anime={anime} />
+                    <AnimeCard anime={anime} callback={deleteAnime} />
                   </li>
                 )}
               </Draggable>
@@ -50,5 +59,9 @@ export default function EditableAnimeList({
         )}
       </Droppable>
     </DragDropContext>
+  ) : (
+    <p className="m-12 text-sm text-foreground-400">
+      No animes yet. Click the button above to add some.
+    </p>
   );
 }

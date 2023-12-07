@@ -286,6 +286,13 @@ export interface Database {
         }
         Returns: undefined
       }
+      update_anime_table: {
+        Args: {
+          p_guide_id: number
+          anime_ids: number[]
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

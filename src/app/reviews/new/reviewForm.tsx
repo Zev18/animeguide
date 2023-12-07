@@ -5,6 +5,7 @@ import { detailedScore } from "@/types/detailedScore";
 import supabase from "@/utils/supabaseClient";
 import {
   camelize,
+  formatDatePg,
   getAnimeDetailsClient,
   searchAnimeClient,
 } from "@/utils/utils";
@@ -57,7 +58,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
       .nullable(),
     longReviewPreview: z.string().nullable(),
     isDraft: z.boolean(),
-    updatedAt: z.date().optional(),
+    updatedAt: z.string().optional(),
   });
 
   const params = useSearchParams();
@@ -196,7 +197,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
         !animeResults.some((existingResult) => existingResult.id === result.id),
     );
 
-    setAnimeResults([...animeResults, ...results.data]);
+    setAnimeResults([...animeResults, ...uniqueResults]);
     setNextResults(results.paging.next || null);
   };
 
@@ -247,6 +248,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
             is_draft: finalData.isDraft,
             anime_id: finalData.animeId,
             author_id: finalData.authorId,
+            updated_at: formatDatePg(new Date()),
           },
         ]);
         if (error) throw new Error("Error upserting review.");

@@ -1,13 +1,17 @@
-import React from "react";
-import { anime } from "@/types/anime";
 import { Card, CardBody, Image } from "@nextui-org/react";
-import { BarChart2, Star } from "react-feather";
+import { X } from "react-feather";
 
-export default function AnimeCard({ anime }: { anime: Record<string, any> }) {
+export default function AnimeCard({
+  anime,
+  callback,
+}: {
+  anime: Record<string, any>;
+  callback?: (anime: Record<string, any>) => void;
+}) {
   return (
     <Card>
       <CardBody>
-        <div className="grid w-full grid-cols-5 items-center gap-2">
+        <div className="grid w-full grid-cols-4 items-center gap-2">
           <div className="flex items-center gap-4 md:col-span-3">
             <Image
               alt={anime.title}
@@ -19,6 +23,12 @@ export default function AnimeCard({ anime }: { anime: Record<string, any> }) {
           <p className="col-span-2 block text-primary md:hidden">
             {anime.title}
           </p>
+          {callback && (
+            <X
+              className="mr-4 justify-self-end text-danger"
+              onClick={() => callback(anime)}
+            />
+          )}
         </div>
       </CardBody>
     </Card>
