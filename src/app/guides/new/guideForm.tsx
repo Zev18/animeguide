@@ -11,6 +11,7 @@ import { z } from "zod";
 import AddAnime from "./AddAnime";
 import CategorySelect from "./CategorySelect";
 import EditableAnimeList from "./EditableAnimeList";
+import { revalidatePath } from "next/cache";
 
 type guideInfo = {
   id: number;
@@ -199,6 +200,7 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
       if (id == 0) {
         throw new Error("No ID found.");
       }
+      // revalidatePath(`/guides/${id}`);
       router.push(`/guides/${id}`);
     } catch (error) {
       console.log(error);

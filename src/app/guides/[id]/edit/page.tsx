@@ -3,15 +3,21 @@ import { Database } from "../../../../../database.types";
 import { Suspense } from "react";
 import { Spinner } from "@nextui-org/react";
 import GuideForm from "../../new/guideForm";
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const supabase = await supabaseServerComponentClient<Database>();
 
-  const { data: guide } = await supabase
+  const { data: guide, error } = await supabase
     .from("anime_guides")
     .select("*")
     .eq("id", params.id)
     .single();
+
+  if (error) {
+    console.log(error);
+    return notFound();
+  }
 
   const { data: animes } = await supabase
     .from("guides_anime_map")
