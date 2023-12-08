@@ -9,9 +9,11 @@ import ReviewCard from "./ReviewCard";
 export default function ReviewsTab({
   username,
   reviews,
+  count,
 }: {
   username: string;
   reviews: any[];
+  count: number;
 }) {
   const [user] = useAtom(userAtom);
 

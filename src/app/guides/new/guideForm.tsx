@@ -200,7 +200,7 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
       if (id == 0) {
         throw new Error("No ID found.");
       }
-      // revalidatePath(`/guides/${id}`);
+      router.refresh();
       router.push(`/guides/${id}`);
     } catch (error) {
       console.log(error);

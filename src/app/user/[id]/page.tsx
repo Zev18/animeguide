@@ -26,18 +26,24 @@ export default async function Page({ params }: { params?: { id: string } }) {
     await supabase.from("users").select().eq("username", username).single(),
   );
 
-  const { data: reviews } = camelize(
+  const { data: reviews, count: reviewCount } = camelize(
     await supabase
       .from("reviews")
-      .select("*, users!inner(username), detailed_score!inner(*)")
+      .select("*, users!inner(username), detailed_score!inner(*)", {
+        count: "estimated",
+      })
+      .order("created_at", { ascending: false })
       .eq("users.username", username)
       .limit(10),
   );
 
-  const { data: guides } = camelize(
+  const { data: guides, count: guideCount } = camelize(
     await supabase
       .from("anime_guides")
-      .select("*, users!inner(username), categories(category)")
+      .select("*, users!inner(username), categories(category)", {
+        count: "estimated",
+      })
+      .order("created_at", { ascending: false })
       .eq("users.username", username)
       .limit(10),
   );
@@ -103,6 +109,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
     <div className="flex flex-col gap-8">
       <ProfileData username={username} fetchedData={userData} />
       <UserTabs
+        metadata={{ reviewCount, guideCount }}
         reviews={reviews}
         animeList={animeList}
         className="flex w-full flex-col"
