@@ -1,14 +1,13 @@
 import { userAtom } from "@/atoms";
 import {
-  Button,
-  Card,
-  CardBody,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Image,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
+import { Image } from "@nextui-org/image";
+import { Button } from "@nextui-org/button";
+import { Card, CardBody } from "@nextui-org/card";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

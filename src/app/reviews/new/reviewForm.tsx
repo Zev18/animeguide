@@ -9,15 +9,12 @@ import {
   getAnimeDetailsClient,
   searchAnimeClient,
 } from "@/utils/utils";
-import {
-  Button,
-  Image,
-  Input,
-  Progress,
-  Slider,
-  Spinner,
-  Textarea,
-} from "@nextui-org/react";
+import { Progress } from "@nextui-org/progress";
+import { Spinner } from "@nextui-org/spinner";
+import { Slider } from "@nextui-org/slider";
+import { Button } from "@nextui-org/button";
+import { Image } from "@nextui-org/image";
+import { Input, Textarea } from "@nextui-org/input";
 import { useAtom } from "jotai";
 import { debounce } from "lodash";
 import { useRouter, useSearchParams } from "next/navigation";

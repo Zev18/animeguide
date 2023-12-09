@@ -1,4 +1,4 @@
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/spinner";
 import React from "react";
 import { CheckCircle, X } from "react-feather";
 

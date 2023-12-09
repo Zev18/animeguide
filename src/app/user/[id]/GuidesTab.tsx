@@ -1,7 +1,9 @@
 "use client";
 
 import { userAtom } from "@/atoms";
-import { Button, Link, Spinner } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Link } from '@nextui-org/link'
+import { Spinner } from "@nextui-org/spinner";
 import { useAtom } from "jotai";
 import GuideCard from "./GuideCard";
 import { useEffect, useState } from "react";

@@ -1,13 +1,13 @@
 import supabase from "@/utils/supabaseClient";
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
+import { Button } from "@nextui-org/button";
 import React, { useEffect, useState } from "react";
 import { List, X } from "react-feather";
 

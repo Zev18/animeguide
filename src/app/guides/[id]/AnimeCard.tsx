@@ -1,6 +1,7 @@
 import React from "react";
 import { anime } from "@/types/anime";
-import { Card, CardBody, Image } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/card";
+import { Image } from "@nextui-org/image";
 import { BarChart2, Star } from "react-feather";
 import Link from "next/link";
 

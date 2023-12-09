@@ -1,7 +1,7 @@
 import { supabaseServerComponentClient } from "@/utils/supabaseServer";
 import { Database } from "../../../../../database.types";
 import { Suspense } from "react";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/spinner";
 import GuideForm from "../../new/guideForm";
 import { notFound } from "next/navigation";
 

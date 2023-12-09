@@ -2,7 +2,8 @@
 
 import { userAtom } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
-import { Button, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";

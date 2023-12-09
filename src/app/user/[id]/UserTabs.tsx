@@ -2,7 +2,7 @@
 
 import User from "@/types/user";
 import UserAnimeList from "@/types/userAnimeList";
-import { Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/tabs";
 import AnimeTab from "./AnimeTab";
 import ReviewsTab from "./ReviewsTab";
 import GuidesTab from "./GuidesTab";

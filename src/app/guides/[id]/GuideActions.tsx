@@ -3,15 +3,15 @@
 import { userAtom } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
-  ModalHeader,
-  Tooltip,
-  useDisclosure,
-} from "@nextui-org/react";
+  ModalHeader, useDisclosure
+} from "@nextui-org/modal"
+import {Tooltip} from '@nextui-org/tooltip'
+import { Button } from "@nextui-org/button";
+
 import { useAtom } from "jotai";
 import { BookmarkCheck, BookmarkX } from "lucide-react";
 import { useRouter } from "next/navigation";

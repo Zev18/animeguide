@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Tooltip, Button } from "@nextui-org/react";
+import { Tooltip } from "@nextui-org/tooltip";
+import { Button } from "@nextui-org/button";
 import { Link } from "react-feather";
 import React, { useState, useEffect } from "react";
 

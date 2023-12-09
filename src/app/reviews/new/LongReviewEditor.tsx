@@ -1,5 +1,6 @@
 import Editor from "@/components/Editor";
-import { Spinner, Switch } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/spinner";
+import { Switch } from "@nextui-org/switch";
 import { Suspense, useState } from "react";
 
 export default function LongReviewEditor({

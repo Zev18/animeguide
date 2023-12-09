@@ -1,5 +1,7 @@
 import { ListAnime } from "@/types/userAnimeList";
-import { Card, CardFooter, CardHeader, Chip, Image } from "@nextui-org/react";
+import { Card, CardFooter, CardHeader } from "@nextui-org/card";
+import { Chip } from "@nextui-org/chip";
+import { Image } from "@nextui-org/image"
 import { capitalize } from "lodash";
 import Link from "next/link";
 import { CheckCircle, RefreshCw } from "react-feather";

@@ -3,7 +3,8 @@
 import { userAtom } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
 import { formatDatePg, getAnimeDetailsClient } from "@/utils/utils";
-import { Button, Input, Textarea } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Input, Textarea } from "@nextui-org/input";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";

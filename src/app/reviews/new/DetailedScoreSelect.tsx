@@ -1,7 +1,9 @@
 import RadarChart from "@/components/RadarChart";
 import ChartIcon from "@/components/chartIcon";
 import { detailedScore } from "@/types/detailedScore";
-import { Accordion, AccordionItem, Slider, Switch } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { Slider } from '@nextui-org/slider'
+import { Switch } from '@nextui-org/switch'
 import { capitalize } from "lodash";
 import { useEffect, useState } from "react";
 import { Minus, Plus } from "react-feather";

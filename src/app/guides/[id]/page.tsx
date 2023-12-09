@@ -1,17 +1,16 @@
 import CopyLink from "@/components/CopyLink";
 import { supabaseServerComponentClient } from "@/utils/supabaseServer";
 import { camelize, getAnimeDetails } from "@/utils/utils";
-import { Avatar, Chip } from "@nextui-org/react";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Avatar } from '@nextui-org/avatar'
+import { Chip } from '@nextui-org/chip'
 import { format } from "date-fns";
-import { cookies } from "next/headers";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Bookmark, Clock, Eye, List } from "react-feather";
 import { Database } from "../../../../database.types";
 import AnimeList from "./AnimeList";
 import GuideActions from "./GuideActions";
 import ViewsTracker from "./ViewsTracker";
-import { notFound } from "next/navigation";
 
 export default async function Guide({ params }: { params: { id: string } }) {
   const supabase = await supabaseServerComponentClient<Database>();

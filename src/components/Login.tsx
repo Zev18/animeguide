@@ -4,12 +4,12 @@ import placeholder from "@/assets/images/placeholder.jpg";
 import { userAtom as userAtomTemplate } from "@/atoms";
 import supabase from "@/utils/supabaseClient";
 import {
-  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
+import { Avatar } from "@nextui-org/avatar";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

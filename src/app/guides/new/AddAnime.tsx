@@ -1,16 +1,16 @@
 import AnimeResult from "@/app/reviews/new/AnimeResult";
 import { searchAnimeClient } from "@/utils/utils";
+import { Button } from "@nextui-org/button";
 import {
-  Button,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Spinner,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@nextui-org/modal";
+import { Input } from "@nextui-org/input";
+import { Spinner } from "@nextui-org/spinner";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { Plus } from "react-feather";

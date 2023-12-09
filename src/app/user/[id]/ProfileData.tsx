@@ -3,7 +3,9 @@
 import { userAtom } from "@/atoms";
 import User from "@/types/user";
 import { hiRes, malUrl, timestampToDate } from "@/utils/utils";
-import { Card, CardBody, Link, Image as Picture } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/card";
+import { Link } from "@nextui-org/link";
+import { Image as Picture } from "@nextui-org/image";
 import { useAtom } from "jotai";
 import Image from "next/image";
 

@@ -1,5 +1,5 @@
 import { getAverage } from "@/utils/utils";
-import { Progress } from "@nextui-org/react";
+import { Progress } from "@nextui-org/progress";
 import { capitalize } from "lodash";
 
 const size = 10;

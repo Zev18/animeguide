@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Google from "@/assets/vector/google";

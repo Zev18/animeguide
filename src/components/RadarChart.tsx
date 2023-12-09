@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import parse from "html-react-parser";
 import { capitalize } from "lodash";
 import RadarTooltip from "./RadarTooltip";

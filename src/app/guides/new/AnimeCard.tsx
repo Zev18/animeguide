@@ -1,4 +1,5 @@
-import { Card, CardBody, Image } from "@nextui-org/react";
+import { Card, CardBody } from "@nextui-org/card";
+import { Image } from "@nextui-org/image";
 import { X } from "react-feather";
 
 export default function AnimeCard({

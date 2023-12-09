@@ -1,5 +1,5 @@
 import UserAnimeList from "@/types/userAnimeList";
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import Link from "next/link";
 import { ArrowRight } from "react-feather";
 import AnimeCard from "./AnimeCard";

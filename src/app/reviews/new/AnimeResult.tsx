@@ -1,4 +1,5 @@
-import { Button, Image } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
+import { Image } from "@nextui-org/image";
 import React from "react";
 import { X } from "react-feather";
 

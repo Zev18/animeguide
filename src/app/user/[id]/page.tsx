@@ -4,20 +4,6 @@ import { notFound } from "next/navigation";
 import ProfileData from "./ProfileData";
 import UserTabs from "./UserTabs";
 
-// export const revalidate = 60;
-
-// export async function generateStaticParams() {
-//   const supabase = await supabaseServer;
-//   const { data: users } = await supabase
-//     .from("users")
-//     .select("username")
-//     .not("username", "is", null);
-
-//   return users!.map((user) => ({
-//     id: user.username,
-//   }));
-// }
-
 export default async function Page({ params }: { params?: { id: string } }) {
   const supabase = await supabaseServerComponentClient();
   const username = params ? params.id : "";

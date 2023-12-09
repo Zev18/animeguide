@@ -1,14 +1,13 @@
 "use client";
 
 import { anime } from "@/types/anime";
+import { Button, ButtonGroup } from "@nextui-org/button";
 import {
-  Button,
-  ButtonGroup,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
 import { capitalize } from "lodash";
 import { useState } from "react";
 import { ArrowUp } from "react-feather";

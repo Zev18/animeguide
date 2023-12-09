@@ -1,7 +1,7 @@
 "use client";
 
 import { userAtom } from "@/atoms";
-import { Button } from "@nextui-org/react";
+import { Button } from "@nextui-org/button";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import ReviewCard from "./ReviewCard";
