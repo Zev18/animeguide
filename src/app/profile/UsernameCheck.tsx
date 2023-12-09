@@ -1,5 +1,4 @@
 import { Spinner } from "@nextui-org/spinner";
-import React from "react";
 import { CheckCircle, X } from "react-feather";
 
 export default function UsernameCheck({ status }: { status: string }) {
