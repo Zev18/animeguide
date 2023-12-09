@@ -1,12 +1,15 @@
-import RadarChart from "@/components/RadarChart";
+import { Suspense, lazy } from "react";
 import ChartIcon from "@/components/chartIcon";
 import { detailedScore } from "@/types/detailedScore";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
-import { Slider } from '@nextui-org/slider'
-import { Switch } from '@nextui-org/switch'
+import { Slider } from "@nextui-org/slider";
+import { Switch } from "@nextui-org/switch";
 import { capitalize } from "lodash";
 import { useEffect, useState } from "react";
 import { Minus, Plus } from "react-feather";
+import { Spinner } from "@nextui-org/spinner";
+
+const RadarChart = lazy(() => import("@/components/RadarChart"));
 
 const emptyScoreValues = {
   plot: 0,
@@ -161,12 +164,20 @@ export default function DetailedScoreSelect({
               </Accordion>
             </div>
             <div className="my-4 flex justify-center self-start">
-              <RadarChart
-                data={scores}
-                pressable={false}
-                size={250}
-                iconSize={16}
-              />
+              <Suspense
+                fallback={
+                  <div className="flex justify-center">
+                    <Spinner />
+                  </div>
+                }
+              >
+                <RadarChart
+                  data={scores}
+                  pressable={false}
+                  size={250}
+                  iconSize={16}
+                />
+              </Suspense>
             </div>
           </div>
         </>
