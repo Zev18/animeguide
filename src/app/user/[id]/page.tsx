@@ -8,99 +8,120 @@ export default async function Page({ params }: { params?: { id: string } }) {
   const supabase = await supabaseServerComponentClient();
   const username = params ? params.id : "";
 
-  const { data: userData } = camelize(
-    await supabase.from("users").select().eq("username", username).single(),
-  );
+  const userPromise = supabase
+    .from("users")
+    .select()
+    .eq("username", username)
+    .single()
+    .then((response) => camelize(response));
 
-  const { data: reviews, count: reviewCount } = camelize(
-    await supabase
-      .from("reviews")
-      .select("*, users!inner(username), detailed_score!inner(*)", {
-        count: "estimated",
-      })
-      .order("created_at", { ascending: false })
-      .eq("users.username", username)
-      .limit(10),
-  );
+  const reviewsPromise = supabase
+    .from("reviews")
+    .select("*, users!inner(username), detailed_score!inner(*)", {
+      count: "exact",
+    })
+    .order("created_at", { ascending: false })
+    .eq("users.username", username)
+    .limit(10)
+    .then((response) => camelize(response));
 
-  const { data: guides, count: guideCount } = camelize(
-    await supabase
-      .from("anime_guides")
-      .select("*, users!inner(username), categories(category)", {
-        count: "estimated",
-      })
-      .order("created_at", { ascending: false })
-      .eq("users.username", username)
-      .limit(10),
-  );
+  const guidesPromise = supabase
+    .from("anime_guides")
+    .select("*, users!inner(username), categories(category)", {
+      count: "estimated",
+    })
+    .order("created_at", { ascending: false })
+    .eq("users.username", username)
+    .limit(10)
+    .then((response) => camelize(response));
 
-  // fetch guide anime info and info on who saved the guide
-  if (guides) {
-    const guidePromises = guides.map(async (guide: Record<string, any>) => {
-      guide["animes"] = [];
-      const { data: animes } = await supabase
-        .from("guides_anime_map")
-        .select("anime_id")
-        .order("order", { ascending: false })
-        .eq("guide_id", guide.id)
-        .limit(3);
+  const [userData, reviewsData, guidesData] = await Promise.all([
+    userPromise,
+    reviewsPromise,
+    guidesPromise,
+  ]);
 
-      guide.animeCount = 0;
+  const promises = [];
 
-      if (animes) {
-        const animePromises = animes.map(async (anime) => {
-          const animeData = camelize(await getAnimeDetails(anime.anime_id));
-          guide.animes.push(animeData);
-        });
+  if (guidesData.data) {
+    const guidePromises = guidesData.data.map(
+      async (guide: Record<string, any>) => {
+        guide["animes"] = [];
+        const { data: animes } = await supabase
+          .from("guides_anime_map")
+          .select("anime_id")
+          .order("order", { ascending: false })
+          .eq("guide_id", guide.id)
+          .limit(3);
 
-        const animeCountPromise = async () => {
-          const { count } = await supabase
-            .from("guides_anime_map")
-            .select("anime_id", { count: "exact", head: true })
-            .eq("guide_id", guide.id);
-          guide.animeCount = count;
-        };
+        guide.animeCount = 0;
 
-        await Promise.all([...animePromises, animeCountPromise()]);
-      }
-    });
+        if (animes) {
+          const animePromises = animes.map(async (anime) => {
+            const animeData = camelize(await getAnimeDetails(anime.anime_id));
+            guide.animes.push(animeData);
+          });
 
-    const countPromises = guides.map(async (guide: Record<string, any>) => {
-      const { count, data } = await supabase
-        .from("guides_users_map")
-        .select("users!inner(username)", { count: "exact" })
-        .eq("guide_id", guide.id);
-      guide.savedCount = count;
-      guide.savedUsers = data;
-    });
+          const animeCountPromise = async () => {
+            const { count } = await supabase
+              .from("guides_anime_map")
+              .select("anime_id", { count: "exact", head: true })
+              .eq("guide_id", guide.id);
+            guide.animeCount = count;
+          };
 
-    await Promise.all([...guidePromises, ...countPromises]);
+          promises.push([...animePromises], animeCountPromise());
+        }
+      },
+    );
+
+    const countPromises = guidesData.data.map(
+      async (guide: Record<string, any>) => {
+        const { count, data } = await supabase
+          .from("guides_users_map")
+          .select("users!inner(username)", { count: "exact" })
+          .eq("guide_id", guide.id);
+        guide.savedCount = count;
+        guide.savedUsers = data;
+      },
+    );
+
+    promises.push([...guidePromises], [...countPromises]);
   }
 
-  if (reviews) {
-    for (const review of reviews) {
-      const anime = camelize(await getAnimeDetails(review.animeId));
-      review["anime"] = anime;
-    }
+  if (reviewsData.data) {
+    const reviewPromises = reviewsData.data.map(
+      async (review: Record<string, any>) => {
+        const anime = camelize(await getAnimeDetails(review.animeId));
+        review["anime"] = anime;
+      },
+    );
+
+    promises.push([...reviewPromises]);
   }
+
+  await Promise.all(promises);
 
   const animeList =
-    userData && userData.malId
-      ? await getMalList(userData.malId, 10, ...[, ,], "list_updated_at")
+    userData.data && userData.data.malId
+      ? await getMalList(userData.data.malId, 10, ...[, ,], "list_updated_at")
       : null;
 
   if (!userData) return notFound();
 
   return (
     <div className="flex flex-col gap-8">
-      <ProfileData username={username} fetchedData={userData} />
+      <ProfileData username={username} fetchedData={userData.data} />
       <UserTabs
-        metadata={{ reviewCount, guideCount }}
-        reviews={reviews}
+        metadata={{
+          reviewCount: reviewsData.count,
+          guideCount: guidesData.count,
+        }}
+        reviews={reviewsData.data}
         animeList={animeList}
         className="flex w-full flex-col"
-        userInfo={userData}
-        guides={guides}
+        userInfo={userData.data}
+        guides={guidesData.data}
       />
     </div>
   );
