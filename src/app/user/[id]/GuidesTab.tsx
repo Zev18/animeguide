@@ -1,15 +1,15 @@
 "use client";
 
 import { userAtom } from "@/atoms";
-import { Button } from "@nextui-org/button";
-import { Link } from '@nextui-org/link'
-import { Spinner } from "@nextui-org/spinner";
-import { useAtom } from "jotai";
-import GuideCard from "./GuideCard";
-import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import supabase from "@/utils/supabaseClient";
 import { camelize, getAnimeDetailsClient } from "@/utils/utils";
+import { Button } from "@nextui-org/button";
+import { Link } from "@nextui-org/link";
+import { Spinner } from "@nextui-org/spinner";
+import { useAtom } from "jotai";
+import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import GuideCard from "./GuideCard";
 
 export default function GuidesTab({
   username,
@@ -24,14 +24,18 @@ export default function GuidesTab({
   const [guidesList, setGuidesList] = useState(guides);
 
   const fetchNextGuides = async () => {
-    const { data: newGuides, error } = await supabase
-      .from("anime_guides")
-      .select("*, users!inner(username), categories(category)")
-      .eq("users.username", username)
-      .range(guidesList.length, guidesList.length + 10);
+    const { data: newGuides, error } = camelize(
+      await supabase
+        .from("anime_guides")
+        .select("*, users!inner(username), categories(category)")
+        .order("created_at", { ascending: false })
+        .eq("users.username", username)
+        .range(guidesList.length, guidesList.length + 10),
+    );
     if (error) {
       console.log(error);
     } else {
+      const promises: PromiseLike<void>[] = [];
       const guidePromises = newGuides.map(
         async (guide: Record<string, any>) => {
           guide["animes"] = [];
@@ -60,7 +64,7 @@ export default function GuidesTab({
               guide.animeCount = count;
             };
 
-            await Promise.all([...animePromises, animeCountPromise()]);
+            promises.push(...animePromises, animeCountPromise());
           }
         },
       );
@@ -75,7 +79,7 @@ export default function GuidesTab({
         },
       );
 
-      await Promise.all([...guidePromises, ...countPromises]);
+      await Promise.all([...promises, ...guidePromises, ...countPromises]);
       setGuidesList([...guidesList, ...newGuides]);
     }
   };

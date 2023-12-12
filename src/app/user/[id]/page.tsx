@@ -17,7 +17,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
 
   const reviewsPromise = supabase
     .from("reviews")
-    .select("*, users!inner(username), detailed_score!inner(*)", {
+    .select("*, users!inner(username), detailed_score(*)", {
       count: "exact",
     })
     .order("created_at", { ascending: false })

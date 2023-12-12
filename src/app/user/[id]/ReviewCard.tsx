@@ -1,8 +1,9 @@
 import animePlaceholder from "@/assets/images/animePlaceholder.jpeg";
 import RadarChart from "@/components/RadarChart";
 import { Button } from "@nextui-org/button";
-import {Card, CardBody} from "@nextui-org/card"
+import { Card, CardBody } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
+import { Spinner } from "@nextui-org/spinner";
 import Link from "next/link";
 import { ArrowRight, Star } from "react-feather";
 
@@ -11,6 +12,15 @@ export default function ReviewCard({
 }: {
   review: Record<string, any>;
 }) {
+  if (!review) return;
+
+  if (!review.anime)
+    return (
+      <div className="flex w-full justify-center">
+        <Spinner />
+      </div>
+    );
+
   const stars = [];
   for (let i = 0; i < Math.floor(review.overallScore / 2); i++) {
     stars.push(<Star key={i} />);
@@ -19,7 +29,7 @@ export default function ReviewCard({
     stars.push(<Star key={stars.length} strokeWidth={3} size={12} />);
   }
 
-  const smallText = review?.anime.title && review.anime.title.length > 30;
+  const smallText = review.anime.title && review.anime.title.length > 30;
 
   return (
     <Card className="w-full max-w-prose p-2">
@@ -51,12 +61,14 @@ export default function ReviewCard({
           </div>
           <div className="flex w-full items-center justify-evenly gap-4 sm:w-max sm:justify-end">
             <div className="flex w-max flex-col text-center">
-              <p>
-                <span className="font-bold text-primary">
-                  {review.overallScore}
-                </span>{" "}
-                / 10
-              </p>
+              {review.overallScore > 0 && (
+                <p>
+                  <span className="font-bold text-primary">
+                    {review.overallScore}
+                  </span>{" "}
+                  / 10
+                </p>
+              )}
               <div className="flex items-center justify-center text-primary">
                 {stars.map((star) => star)}
               </div>

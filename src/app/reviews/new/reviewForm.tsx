@@ -281,6 +281,7 @@ export default function ReviewForm({ reviewId }: { reviewId?: number }) {
           .insert({ ...finalData.detailedScore, review_id: finalReviewId });
         if (error) throw new Error("Error inserting detailed score.");
       }
+      router.refresh();
       router.push(`/reviews/${finalReviewId}`);
     } catch (error) {
       console.error(error);
