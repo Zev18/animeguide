@@ -1,8 +1,8 @@
 import CopyLink from "@/components/CopyLink";
 import { supabaseServerComponentClient } from "@/utils/supabaseServer";
 import { camelize, getAnimeDetails } from "@/utils/utils";
-import { Avatar } from '@nextui-org/avatar'
-import { Chip } from '@nextui-org/chip'
+import { Avatar } from "@nextui-org/avatar";
+import { Chip } from "@nextui-org/chip";
 import { format } from "date-fns";
 import Link from "next/link";
 import { notFound } from "next/navigation";
