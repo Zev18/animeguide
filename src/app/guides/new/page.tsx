@@ -18,7 +18,7 @@ export default async function NewGuide() {
 
   if (!session) {
     // this is a protected route - only users who are signed in can view this route
-    redirect("/login");
+    redirect("/login?redirect=/guides/new");
   }
 
   return (

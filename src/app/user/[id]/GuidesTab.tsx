@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { Spinner } from "@nextui-org/spinner";
 import { useAtom } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import GuideCard from "./GuideCard";
 
@@ -35,7 +35,6 @@ export default function GuidesTab({
     if (error) {
       console.log(error);
     } else {
-      const promises: PromiseLike<void>[] = [];
       const guidePromises = newGuides.map(
         async (guide: Record<string, any>) => {
           guide["animes"] = [];
@@ -64,7 +63,7 @@ export default function GuidesTab({
               guide.animeCount = count;
             };
 
-            promises.push(...animePromises, animeCountPromise());
+            await Promise.all([...animePromises, animeCountPromise()]);
           }
         },
       );
@@ -79,10 +78,14 @@ export default function GuidesTab({
         },
       );
 
-      await Promise.all([...promises, ...guidePromises, ...countPromises]);
+      await Promise.all([...guidePromises, ...countPromises]);
       setGuidesList([...guidesList, ...newGuides]);
     }
   };
+
+  useEffect(() => {
+    console.log(guidesList);
+  }, [guidesList]);
 
   return (
     <div className="m-1 flex flex-col items-center gap-4">

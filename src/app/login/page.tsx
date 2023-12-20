@@ -1,11 +1,19 @@
 "use client";
 
+import { userAtom } from "@/atoms";
 import JustLogin from "@/components/JustLogin";
-import { useSearchParams } from "next/navigation";
+import { useAtom } from "jotai";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
+  const [user] = useAtom(userAtom);
   const params = useSearchParams();
   const redirect = params.get("redirect");
+
+  if (user) {
+    router.push(redirect ? redirect : "/");
+  }
 
   return (
     <div className="my-10 flex w-full justify-center">

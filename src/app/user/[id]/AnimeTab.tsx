@@ -7,9 +7,11 @@ import AnimeCard from "./AnimeCard";
 export default function AnimeTab({
   animeList,
   username,
+  malId,
 }: {
   animeList?: UserAnimeList;
   username: string;
+  malId: string;
 }) {
   return (
     <div className="m-1 flex flex-col gap-4">
@@ -19,7 +21,7 @@ export default function AnimeTab({
           as={Link}
           color="primary"
           variant="ghost"
-          href={`/user/${username}/animes`}
+          href={`https://myanimelist.net/animelist/${malId}`}
         >
           View all
         </Button>
@@ -38,7 +40,7 @@ export default function AnimeTab({
         variant="light"
         className="my-2 self-center"
         as={Link}
-        href={`/reviews/${username}/animes`}
+        href={`https://myanimelist.net/animelist/${malId}`}
       >
         View more <ArrowRight size={16} />
       </Button>

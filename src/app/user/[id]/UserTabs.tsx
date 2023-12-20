@@ -41,7 +41,11 @@ export default function UserTabs({
         </Tab>
         {userInfo.malId && (
           <Tab key="animes" title="Animes">
-            <AnimeTab animeList={animeList} username={userInfo.username} />
+            <AnimeTab
+              animeList={animeList}
+              username={userInfo.username}
+              malId={userInfo.malId}
+            />
           </Tab>
         )}
       </Tabs>

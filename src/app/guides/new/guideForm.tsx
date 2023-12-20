@@ -55,6 +55,7 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
     description: guideInfo?.description || "",
   });
   const [animes, setAnimes] = useState<Record<string, any>[]>([]);
+  const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     const fetchAnimes = async () => {
@@ -71,12 +72,13 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
 
       await Promise.all([...animePromises]);
       setAnimes(animeList.sort((a, b) => a.order - b.order));
+      setFetched(true);
     };
 
-    if (guideInfo?.animes && animes.length == 0) {
+    if (!fetched) {
       fetchAnimes();
     }
-  }, [animes, guideInfo]);
+  }, [animes, guideInfo, fetched]);
 
   const [categoryInfo, setCategoryInfo] = useState(
     guideInfo ? guideInfo.category : null,

@@ -31,11 +31,11 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
             <div className="flex items-center gap-4 text-tiny text-foreground-500">
               <div className="flex items-center gap-1">
                 <List size={iconSize} />
-                {guide.animeCount}
+                {guide.animeCount ? guide.animeCount : 0}
               </div>
               <div className="flex items-center gap-1">
                 <Bookmark size={iconSize} />
-                {guide.savedCount}
+                {guide.savedCount ? guide.savedCount : 0}
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   if (!session) {
     // this is a protected route - only users who are signed in can view this route
-    redirect("/login");
+    redirect("/login?redirect=/guides/edit");
   }
 
   const { data: guide, error } = await supabase

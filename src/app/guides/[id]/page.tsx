@@ -15,55 +15,63 @@ import ViewsTracker from "./ViewsTracker";
 export default async function Guide({ params }: { params: { id: string } }) {
   const supabase = await supabaseServerComponentClient<Database>();
 
-  const { data: guide, error } = camelize(
-    await supabase
+  const [guideResponse, animesResponse, userCountResponse] = await Promise.all([
+    supabase
       .from("anime_guides")
       .select("*, users!inner(*), categories(category)")
       .eq("id", params.id)
-      .single(),
-  );
+      .single()
+      .then(({ data, error }) => camelize({ data, error })),
 
-  if (error) {
-    console.log(error);
-    return notFound();
-  }
-
-  const { data: animes } = camelize(
-    await supabase
+    supabase
       .from("guides_anime_map")
       .select("anime_id, order, date_added")
       .eq("guide_id", params.id)
-      .order("order"),
-  );
+      .order("order")
+      .then(({ data }) => camelize({ data })),
 
-  if (animes) {
+    supabase
+      .from("guides_users_map")
+      .select("*, users!inner(username, avatar_url, display_name)", {
+        count: "estimated",
+        head: true,
+      })
+      .eq("guide_id", params.id)
+      .then(({ count }) => camelize({ count })),
+  ]);
+
+  if (guideResponse.error) {
+    console.log(guideResponse.error);
+    return notFound();
+  }
+
+  const { data: guide, error } = guideResponse;
+
+  if (animesResponse.data) {
     const animeList: Record<string, any>[] = [];
-    const animePromises = animes.map(async (anime: Record<string, number>) => {
-      const animeData = camelize(await getAnimeDetails(anime.animeId, "mean"));
-      const { data: avgScore } = await supabase.rpc("average_score", {
-        p_anime_id: anime.animeId,
-      });
-      animeList.push({
-        ...animeData,
-        avgScore: avgScore,
-        order: anime.order,
-        dateAdded: anime.dateAdded,
-      });
-    });
+    const animePromises = animesResponse.data.map(
+      async (anime: Record<string, number>) => {
+        const animeData = camelize(
+          await getAnimeDetails(anime.animeId, "mean"),
+        );
+        const { data: avgScore } = await supabase.rpc("average_score", {
+          p_anime_id: anime.animeId,
+        });
+        animeList.push({
+          ...animeData,
+          avgScore: avgScore,
+          order: anime.order,
+          dateAdded: anime.dateAdded,
+        });
+      },
+    );
 
-    await Promise.all([...animePromises]);
+    await Promise.all(animePromises);
     guide.animeList = animeList;
     guide.animeCount = animeList.length;
   }
 
-  const { data: users, count: userCount } = camelize(
-    await supabase
-      .from("guides_users_map")
-      .select("*, users!inner(username, avatar_url, display_name)", {
-        count: "estimated",
-      })
-      .eq("guide_id", params.id),
-  );
+  const { count: userCount } = userCountResponse;
 
   guide.userCount = userCount || 0;
 

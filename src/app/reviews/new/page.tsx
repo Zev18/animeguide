@@ -18,7 +18,7 @@ export default async function NewReview() {
 
   if (!session) {
     // this is a protected route - only users who are signed in can view this route
-    redirect("/login");
+    redirect("/login?redirect=/reviews/new");
   }
 
   return (

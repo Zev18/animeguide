@@ -15,6 +15,8 @@ const headers: HeadersInit = {
   "X-MAL-CLIENT-ID": process.env.NEXT_PUBLIC_MAL_CLIENT_ID!,
 };
 
+// to generate supabase types: supabase gen types typescript --project-id sgncomrfzmsccjmvvfpv > database.types.ts
+
 /**
  * Converts the keys of an object to camel case recursively.
  *

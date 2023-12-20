@@ -70,7 +70,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
             guide.animeCount = count;
           };
 
-          promises.push([...animePromises], animeCountPromise());
+          await Promise.all([...animePromises, animeCountPromise()]);
         }
       },
     );
