@@ -81,7 +81,8 @@ export default function ReviewsTab({
             <Spinner size="sm" />
           </div>
         }
-        className="w-full px-8"
+        style={{ overflow: "visible" }}
+        className="w-full md:px-8"
       >
         {reviewsList.map((review) => (
           <div key={review.id} className="my-4 flex w-full justify-center">

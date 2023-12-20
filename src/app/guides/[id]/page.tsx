@@ -45,7 +45,7 @@ export default async function Guide({ params }: { params: { id: string } }) {
     return notFound();
   }
 
-  const { data: guide, error } = guideResponse;
+  const { data: guide } = guideResponse;
 
   if (animesResponse.data) {
     const animeList: Record<string, any>[] = [];

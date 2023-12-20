@@ -11,16 +11,32 @@ import { Card, CardBody } from "@nextui-org/card";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bookmark, List, MoreVertical } from "react-feather";
+import { Bookmark, Eye, List, MoreVertical } from "react-feather";
+import supabase from "@/utils/supabaseClient";
 
 export default function GuideCard({ guide }: { guide: Record<string, any> }) {
-  const iconSize = 13;
+  const iconSize = 14;
   const [user] = useAtom(userAtom);
 
   const router = useRouter();
 
+  const deleteGuide = async (id: number) => {
+    if (!user) return;
+    const { error } = await supabase.from("anime_guides").delete().eq("id", id);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    location.reload();
+  };
+
   return (
-    <Card className="w-full max-w-xl p-2">
+    <Card
+      as="div"
+      className="w-full max-w-xl p-2"
+      isPressable
+      onPress={() => router.push(`/guides/${guide.id}`)}
+    >
       <CardBody className="p-4">
         <div className="flex w-full justify-between gap-8">
           <div className="flex flex-col gap-4">
@@ -36,6 +52,10 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
               <div className="flex items-center gap-1">
                 <Bookmark size={iconSize} />
                 {guide.savedCount ? guide.savedCount : 0}
+              </div>
+              <div className="flex items-center gap-1">
+                <Eye size={iconSize} />
+                {guide.views ? guide.views : 0}
               </div>
             </div>
           </div>
@@ -66,7 +86,7 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                   <DropdownMenu aria-label={`guide options ${guide.id}`}>
                     <DropdownItem
                       key="edit"
-                      onClick={() => router.push(`/guides/${guide.id}/edit`)}
+                      onPress={() => router.push(`/guides/${guide.id}/edit`)}
                     >
                       Edit
                     </DropdownItem>
@@ -74,6 +94,7 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                       key="delete"
                       className="text-danger"
                       color="danger"
+                      onPress={() => deleteGuide(guide.id)}
                     >
                       Delete
                     </DropdownItem>

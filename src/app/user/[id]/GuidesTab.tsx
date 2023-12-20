@@ -83,12 +83,8 @@ export default function GuidesTab({
     }
   };
 
-  useEffect(() => {
-    console.log(guidesList);
-  }, [guidesList]);
-
   return (
-    <div className="m-1 flex flex-col items-center gap-4">
+    <div className="m-1 flex flex-col items-center gap-4 overflow-x-visible">
       <style>
         {`
           .infinite-scroll-component__outerdiv {
@@ -121,7 +117,8 @@ export default function GuidesTab({
             <Spinner size="sm" />
           </div>
         }
-        className="w-full px-8"
+        style={{ overflow: "visible" }}
+        className="w-full md:px-8"
       >
         {guidesList.map((guide) => (
           <div key={guide.id} className="my-4 flex w-full justify-center">
