@@ -3,6 +3,7 @@ import { getAnimeDetails } from "@/utils/utils";
 import React from "react";
 import NotFound from "./not-found";
 import AnimeInfo from "./AnimeInfo";
+import ReviewsSection from "./ReviewsSection";
 
 export default async function AnimePage({
   params,
@@ -30,8 +31,9 @@ export default async function AnimePage({
   if (anime instanceof Error) return <NotFound />;
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 sm:gap-8">
       <AnimeInfo anime={anime} avgScore={Number(avgScore).toFixed(1)} />
+      <ReviewsSection reviews={reviews} count={reviewsCount} />
     </div>
   );
 }

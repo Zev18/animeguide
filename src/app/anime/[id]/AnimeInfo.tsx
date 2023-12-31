@@ -1,9 +1,14 @@
+"use client";
+
 import { Card, CardBody } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Image as Picture } from "@nextui-org/image";
 import { Link } from "@nextui-org/link";
 import { capitalize } from "lodash";
-import React from "react";
+import React, { useState } from "react";
+import cx from "classnames";
+import { Button } from "@nextui-org/button";
+import { ArrowDown, ArrowUp } from "react-feather";
 
 export default function AnimeInfo({
   anime,
@@ -12,6 +17,8 @@ export default function AnimeInfo({
   anime: Record<string, any>;
   avgScore: number | string | null;
 }) {
+  const [synopsisOpen, setSynopsisOpen] = useState(false);
+
   return (
     <>
       <Card isBlurred shadow="sm">
@@ -57,12 +64,63 @@ export default function AnimeInfo({
                     anime.start_season.year}
                 </p>
               </div>
+              <div className="m-2 hidden flex-col sm:flex">
+                <h2 className="text-lg">Synopsis</h2>
+                <p
+                  className={cx("prose whitespace-pre-line", {
+                    "line-clamp-5": !synopsisOpen,
+                  })}
+                >
+                  {anime.synopsis}
+                </p>
+                <Button
+                  onPress={() => setSynopsisOpen(!synopsisOpen)}
+                  variant="light"
+                  color="primary"
+                >
+                  {synopsisOpen ? (
+                    <p className="flex items-center gap-2">
+                      <ArrowUp />
+                      Show Less
+                    </p>
+                  ) : (
+                    <p className="flex items-center gap-2">
+                      <ArrowDown />
+                      Show More
+                    </p>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         </CardBody>
       </Card>
-      <div className="m-2 sm:hidden">
+      <div className="m-2 flex flex-col sm:hidden">
         <h2 className="text-lg">Synopsis</h2>
+        <p
+          className={cx("prose whitespace-pre-line", {
+            "line-clamp-5": !synopsisOpen,
+          })}
+        >
+          {anime.synopsis}
+        </p>
+        <Button
+          onPress={() => setSynopsisOpen(!synopsisOpen)}
+          variant="light"
+          color="primary"
+        >
+          {synopsisOpen ? (
+            <p className="flex items-center gap-2">
+              <ArrowUp />
+              Show Less
+            </p>
+          ) : (
+            <p className="flex items-center gap-2">
+              <ArrowDown />
+              Show More
+            </p>
+          )}
+        </Button>
       </div>
     </>
   );
