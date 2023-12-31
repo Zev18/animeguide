@@ -7,7 +7,7 @@ import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { Spinner } from "@nextui-org/spinner";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import GuideCard from "./GuideCard";
 
@@ -83,6 +83,13 @@ export default function GuidesTab({
     }
   };
 
+  const deleteDeleted = useCallback(
+    (id: number) => {
+      setGuidesList(guidesList.filter((guide) => guide.id !== id));
+    },
+    [guidesList],
+  );
+
   return (
     <div className="m-1 flex flex-col items-center gap-4 overflow-x-visible">
       <style>
@@ -122,7 +129,7 @@ export default function GuidesTab({
       >
         {guidesList.map((guide) => (
           <div key={guide.id} className="my-4 flex w-full justify-center">
-            <GuideCard guide={guide} />
+            <GuideCard guide={guide} callback={deleteDeleted} />
           </div>
         ))}
       </InfiniteScroll>

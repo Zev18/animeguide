@@ -13,10 +13,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bookmark, Eye, List, MoreVertical } from "react-feather";
 import supabase from "@/utils/supabaseClient";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/modal";
 
-export default function GuideCard({ guide }: { guide: Record<string, any> }) {
+export default function GuideCard({
+  guide,
+  callback,
+}: {
+  guide: Record<string, any>;
+  callback: (id: number) => void;
+}) {
   const iconSize = 14;
   const [user] = useAtom(userAtom);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const router = useRouter();
 
@@ -27,7 +42,7 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
       console.log(error);
       return;
     }
-    location.reload();
+    callback(id);
   };
 
   return (
@@ -94,12 +109,42 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                       key="delete"
                       className="text-danger"
                       color="danger"
-                      onPress={() => deleteGuide(guide.id)}
+                      onPress={onOpen}
                     >
                       Delete
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
+                <Modal isOpen={isOpen} onClose={onOpenChange}>
+                  <ModalContent>
+                    {(onClose) => (
+                      <>
+                        <ModalHeader>Delete {guide.title}?</ModalHeader>
+                        <ModalBody>This can&apos;t be undone.</ModalBody>
+                        <ModalFooter className="">
+                          <Button
+                            className="grow sm:grow-0"
+                            color="primary"
+                            onPress={onClose}
+                            variant="flat"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="grow sm:grow-0"
+                            color="danger"
+                            variant="flat"
+                            onPress={() => {
+                              deleteGuide(guide.id);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
               </div>
             )}
           </div>
