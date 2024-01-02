@@ -6,13 +6,12 @@ import { formatDatePg, getAnimeDetailsClient } from "@/utils/utils";
 import { Button } from "@nextui-org/button";
 import { Input, Textarea } from "@nextui-org/input";
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import AddAnime from "./AddAnime";
 import CategorySelect from "./CategorySelect";
 import EditableAnimeList from "./EditableAnimeList";
-import { revalidatePath } from "next/cache";
 
 type guideInfo = {
   id: number;
@@ -33,6 +32,10 @@ type animeSubmission = {
 
 export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
   const [user] = useAtom(userAtom);
+
+  const params = useSearchParams();
+  const startingAnime = params.get("startingAnime");
+
   const router = useRouter();
 
   const schema = z.object({
@@ -75,10 +78,19 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
       setFetched(true);
     };
 
-    if (!fetched) {
+    const fetchStartingAnime = async () => {
+      if (startingAnime) {
+        const animeData = await getAnimeDetailsClient(Number(startingAnime));
+        setAnimes([{ ...animeData, order: 1 }]);
+      }
+    };
+
+    if (!fetched && guideInfo) {
       fetchAnimes();
+    } else {
+      fetchStartingAnime();
     }
-  }, [animes, guideInfo, fetched]);
+  }, [animes, guideInfo, fetched, startingAnime]);
 
   const [categoryInfo, setCategoryInfo] = useState(
     guideInfo ? guideInfo.category : null,
@@ -96,6 +108,7 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
     title: string;
     description: string | null;
     updated_at?: string;
+    size: number;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,6 +119,7 @@ export default function GuideForm({ guideInfo }: { guideInfo?: guideInfo }) {
       category_id: formData.category,
       title: formData.title,
       description: formData.description,
+      size: animes.length,
     };
     const animeIds: number[] = animes.map((anime) => anime.id);
     if (guideInfo) finalData.updated_at = formatDatePg(new Date());

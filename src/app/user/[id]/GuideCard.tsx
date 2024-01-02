@@ -62,7 +62,7 @@ export default function GuideCard({
             <div className="flex items-center gap-4 text-tiny text-foreground-500">
               <div className="flex items-center gap-1">
                 <List size={iconSize} />
-                {guide.animeCount ? guide.animeCount : 0}
+                {guide.size ? guide.size : 0}
               </div>
               <div className="flex items-center gap-1">
                 <Bookmark size={iconSize} />

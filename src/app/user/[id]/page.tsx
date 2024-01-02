@@ -28,7 +28,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
   const guidesPromise = supabase
     .from("anime_guides")
     .select("*, users!inner(username), categories(category)", {
-      count: "estimated",
+      count: "exact",
     })
     .order("created_at", { ascending: false })
     .eq("users.username", username)
@@ -57,20 +57,10 @@ export default async function Page({ params }: { params?: { id: string } }) {
         guide.animeCount = 0;
 
         if (animes) {
-          const animePromises = animes.map(async (anime) => {
+          await animes.map(async (anime) => {
             const animeData = camelize(await getAnimeDetails(anime.anime_id));
             guide.animes.push(animeData);
           });
-
-          const animeCountPromise = async () => {
-            const { count } = await supabase
-              .from("guides_anime_map")
-              .select("anime_id", { count: "exact", head: true })
-              .eq("guide_id", guide.id);
-            guide.animeCount = count;
-          };
-
-          await Promise.all([...animePromises, animeCountPromise()]);
         }
       },
     );
@@ -108,6 +98,8 @@ export default async function Page({ params }: { params?: { id: string } }) {
       : null;
 
   if (!userData) return notFound();
+
+  console.log(guidesData.data);
 
   return (
     <div className="flex flex-col gap-8">

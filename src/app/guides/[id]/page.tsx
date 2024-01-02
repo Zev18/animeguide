@@ -32,7 +32,7 @@ export default async function Guide({ params }: { params: { id: string } }) {
 
     supabase
       .from("guides_users_map")
-      .select("*, users!inner(username, avatar_url, display_name)", {
+      .select("id", {
         count: "estimated",
         head: true,
       })

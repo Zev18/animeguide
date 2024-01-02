@@ -1,9 +1,8 @@
 import supabase from "@/utils/supabaseClient";
 import { getAnimeDetails } from "@/utils/utils";
-import React from "react";
-import NotFound from "./not-found";
 import AnimeInfo from "./AnimeInfo";
 import ReviewsSection from "./ReviewsSection";
+import NotFound from "./not-found";
 
 export default async function AnimePage({
   params,
@@ -18,8 +17,15 @@ export default async function AnimePage({
       ),
       supabase
         .from("reviews")
-        .select("*", { count: "exact" })
-        .eq("anime_id", params.id),
+        .select(
+          "*, users!inner(username, avatar_url, display_name), detailed_score(*)",
+          {
+            count: "exact",
+          },
+        )
+        .eq("anime_id", params.id)
+        .order("created_at", { ascending: false })
+        .limit(5),
       supabase.rpc("average_score", {
         p_anime_id: Number(params.id),
       }),

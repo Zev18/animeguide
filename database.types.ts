@@ -16,6 +16,7 @@ export interface Database {
           created_at: string
           description: string | null
           id: number
+          size: number
           title: string
           updated_at: string | null
           views: number
@@ -26,6 +27,7 @@ export interface Database {
           created_at?: string
           description?: string | null
           id?: number
+          size?: number
           title: string
           updated_at?: string | null
           views?: number
@@ -36,6 +38,7 @@ export interface Database {
           created_at?: string
           description?: string | null
           id?: number
+          size?: number
           title?: string
           updated_at?: string | null
           views?: number
@@ -274,9 +277,21 @@ export interface Database {
         }
         Returns: number
       }
+      decrement_size: {
+        Args: {
+          ids_to_update: number[]
+        }
+        Returns: undefined
+      }
       increment: {
         Args: {
           guide_id: number
+        }
+        Returns: undefined
+      }
+      increment_size: {
+        Args: {
+          ids_to_update: number[]
         }
         Returns: undefined
       }

@@ -28,6 +28,8 @@ export default function RadarChart({
   if (data) {
     delete data.id;
     delete data.reviewId;
+  } else {
+    return;
   }
   const columns: Record<string, any> = { ...data };
   let graphData: Record<string, any> = { ...data, meta: { color: "#30ddff" } };
