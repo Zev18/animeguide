@@ -53,7 +53,6 @@ export default function AnimeInfo({
           return { ...guide, containsAnime };
         });
         setGuides(alteredData);
-        console.log(alteredData);
       }
     }
     getGuides();
@@ -68,15 +67,13 @@ export default function AnimeInfo({
     const addedTo: number[] = [];
     guides.forEach((guide) => {
       if (guideIds.includes(guide.id)) {
-        if (!guide.containsAnime) {
-          newRecords.push({
-            guide_id: guide.id,
-            anime_id: anime.id,
-            order: guide.size + 1,
-          });
-          addedTo.push(guide.id);
-          guide.containsAnime = true;
-        }
+        newRecords.push({
+          guide_id: guide.id,
+          anime_id: anime.id,
+          order: guide.size + 1,
+        });
+        addedTo.push(guide.id);
+        guide.containsAnime = true;
       }
     });
 
@@ -89,7 +86,7 @@ export default function AnimeInfo({
 
   return (
     <div className="flex flex-col items-center">
-      <Card isBlurred shadow="sm" className="max-w-max p-2">
+      <Card isBlurred shadow="sm" className="max-w-3xl p-2">
         <CardBody>
           <div className="grid grid-cols-3 gap-6 md:flex md:gap-12">
             <div className="flex flex-col gap-2 self-start">

@@ -283,6 +283,26 @@ export interface Database {
         }
         Returns: undefined
       }
+      get_guides_with_anime: {
+        Args: {
+          anime_id_param: number
+        }
+        Returns: {
+          id: number
+          created_at: string
+          updated_at: string
+          author_id: string
+          title: string
+          description: string
+          size: number
+          category_id: number
+          display_name: string
+          avatar_url: string
+          username: string
+          views: number
+          user_count: number
+        }[]
+      }
       increment: {
         Args: {
           guide_id: number
