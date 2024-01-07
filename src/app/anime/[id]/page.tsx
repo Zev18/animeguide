@@ -49,11 +49,6 @@ export default async function AnimePage({
       .order("views", { ascending: false }),
   ]);
 
-  console.log(anime);
-  console.log(reviews);
-  console.log(guides);
-  console.log(guidesCount);
-
   if (anime instanceof Error) return <NotFound />;
 
   return (

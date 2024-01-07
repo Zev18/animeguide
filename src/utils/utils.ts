@@ -276,3 +276,18 @@ export const formatDatePg = (date: Date): string => {
     .replace("Z", "+00:00");
   return postgresTimestampTZ;
 };
+
+/**
+ * Generates a pagination object based on the given page and size parameters.
+ *
+ * @param {number} page - The current page number.
+ * @param {number} size - The number of items per page.
+ * @return {Object} An object containing the starting and ending indices of the pagination range.
+ */
+export const getPagination = (page: number | null, size: number) => {
+  const limit = size ? +size : 3;
+  const from = page ? (page - 1) * limit : 0;
+  const to = page ? from + size - 1 : size - 1;
+
+  return { from, to };
+};

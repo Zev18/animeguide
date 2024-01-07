@@ -86,7 +86,7 @@ export default function AnimeInfo({
 
   return (
     <div className="flex flex-col items-center">
-      <Card isBlurred shadow="sm" className="max-w-3xl p-2">
+      <Card isBlurred shadow="sm" className="max-w-4xl p-2">
         <CardBody>
           <div className="grid grid-cols-3 gap-6 md:flex md:gap-12">
             <div className="flex flex-col gap-2 self-start">
@@ -95,8 +95,8 @@ export default function AnimeInfo({
                   as={Image}
                   src={anime.main_picture.large}
                   alt={anime.title}
-                  width={256}
-                  height={256}
+                  width={200}
+                  height={200}
                   isBlurred
                   className="mb-2"
                 />

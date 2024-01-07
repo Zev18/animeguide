@@ -27,7 +27,7 @@ export default function ReviewsSection({
         <Button
           color="primary"
           variant="flat"
-          onPress={() => router.push(`/anime/${animeId}/reviews`)}
+          onPress={() => router.push(`/anime/${animeId}/reviews?page=1`)}
         >
           View all
         </Button>
