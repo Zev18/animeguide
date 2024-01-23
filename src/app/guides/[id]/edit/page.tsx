@@ -30,6 +30,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     console.log(error);
     return notFound();
   }
+  if (session.user.id != guide.author_id) {
+    redirect("/");
+  }
 
   const { data: animes } = await supabase
     .from("guides_anime_map")
