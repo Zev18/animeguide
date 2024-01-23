@@ -20,6 +20,7 @@ export default function ProfileData({
 
   // use the fetched data if the user is not logged in
   const userInfo = user?.username === username ? user : fetchedData;
+  console.log(hiRes(256, userInfo.avatarUrl));
 
   return (
     <Card isBlurred shadow="sm">
@@ -32,6 +33,7 @@ export default function ProfileData({
             width={256}
             height={256}
             isBlurred
+            referrerPolicy="no-referrer"
           />
           <div className="flex flex-col gap-2">
             <div>
