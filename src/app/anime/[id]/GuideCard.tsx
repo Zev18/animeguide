@@ -52,7 +52,13 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Avatar src={guide.avatar_url} size="sm" />
+                <Avatar
+                  src={guide.avatar_url}
+                  size="sm"
+                  imgProps={{
+                    referrerPolicy: "no-referrer",
+                  }}
+                />
                 <Link href={"/user/" + guide.username}>
                   {guide.display_name}
                 </Link>

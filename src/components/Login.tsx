@@ -59,9 +59,6 @@ export default function Login({
           src={userData.avatarUrl ? userData.avatarUrl : placeholder}
           alt="profile Icon"
           className="cursor-pointer rounded-full"
-          imgProps={{
-            referrerPolicy: "no-referrer",
-          }}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="Dynamic Actions">

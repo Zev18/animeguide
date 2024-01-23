@@ -101,6 +101,9 @@ export default async function Guide({ params }: { params: { id: string } }) {
                 alt={guide.users.displayName}
                 src={guide.users.avatarUrl}
                 name={guide.users.displayName}
+                imgProps={{
+                  referrerPolicy: "no-referrer",
+                }}
               />
               <div className="flex flex-col justify-center text-sm text-foreground-400 md:items-end">
                 <p>

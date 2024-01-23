@@ -37,6 +37,9 @@ export default function ReviewCard({
                 src={review.users.avatarUrl}
                 alt={review.users.displayName}
                 size="lg"
+                imgProps={{
+                  referrerPolicy: "no-referrer",
+                }}
               />
             </Link>
             <div className="flex flex-col justify-center">
