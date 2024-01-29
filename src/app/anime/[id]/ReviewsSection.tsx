@@ -18,8 +18,8 @@ export default function ReviewsSection({
   const router = useRouter();
 
   return (
-    <div className="max-w-fit">
-      <div className="flex items-center justify-between">
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">Reviews</h2>
           <p className="text-lg text-foreground-400">({count})</p>
@@ -32,7 +32,7 @@ export default function ReviewsSection({
           View all
         </Button>
       </div>
-      <div className="my-4 flex w-full flex-col items-center gap-2">
+      <div className="my-4 flex w-full max-w-fit flex-col items-center gap-2">
         {reviews ? (
           reviews.map((review) => (
             <ReviewCard key={review.id} review={camelize(review)} />

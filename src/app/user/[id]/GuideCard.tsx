@@ -55,9 +55,14 @@ export default function GuideCard({
       <CardBody className="p-4">
         <div className="flex w-full justify-between gap-8">
           <div className="flex flex-col gap-4">
-            <Link href={`/guides/${guide.id}`} className="text-xl text-primary">
-              {guide.title}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/guides/${guide.id}`}
+                className="text-xl text-primary"
+              >
+                {guide.title}
+              </Link>
+            </div>
             <p className="text-sm text-foreground-500">{guide.description}</p>
             <div className="flex items-center gap-4 text-tiny text-foreground-500">
               <div className="flex items-center gap-1">

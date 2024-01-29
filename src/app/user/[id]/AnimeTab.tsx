@@ -6,7 +6,6 @@ import AnimeCard from "./AnimeCard";
 
 export default function AnimeTab({
   animeList,
-  username,
   malId,
 }: {
   animeList?: UserAnimeList;

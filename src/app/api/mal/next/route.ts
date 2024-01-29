@@ -1,4 +1,3 @@
-import { getAnimeDetails } from "@/utils/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 const headers: HeadersInit = {
@@ -8,11 +7,9 @@ const headers: HeadersInit = {
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get("url");
-  console.log(url);
   try {
     if (!url) throw new Error("Invalid URL");
     const response = await fetch(url, { headers });
-    console.log(response);
 
     if (!response.ok) {
       throw new Error("Error searching animes");

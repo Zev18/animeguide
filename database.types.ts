@@ -295,7 +295,7 @@ export interface Database {
           title: string
           description: string
           size: number
-          category_id: number
+          category: string
           display_name: string
           avatar_url: string
           username: string
@@ -320,6 +320,39 @@ export interface Database {
           p_guide_id: number
         }
         Returns: undefined
+      }
+      search_guides: {
+        Args: {
+          query: string
+        }
+        Returns: {
+          id: number
+          created_at: string
+          updated_at: string
+          author_id: string
+          title: string
+          description: string
+          size: number
+          category: string
+          display_name: string
+          avatar_url: string
+          username: string
+          views: number
+          user_count: number
+          anime_ids: number[]
+        }[]
+      }
+      search_users: {
+        Args: {
+          query: string
+        }
+        Returns: {
+          id: string
+          created_at: string
+          username: string
+          display_name: string
+          avatar_url: string
+        }[]
       }
       update_anime_table: {
         Args: {

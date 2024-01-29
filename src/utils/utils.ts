@@ -251,6 +251,15 @@ export const getMalListClient = async (
   return await res.json();
 };
 
+/**
+ * Asynchronous function to search for anime using the given query, limit, offset, and fields.
+ *
+ * @param {string} query - The search query for anime
+ * @param {number} [limit] - The maximum number of results to return
+ * @param {number} [offset] - The number of results to skip
+ * @param {string} [fields] - The fields to sort the results by
+ * @return {Promise<any>} A promise that resolves with the search results
+ */
 export const searchAnimeClient = async (
   query: string,
   limit?: number,
@@ -262,7 +271,7 @@ export const searchAnimeClient = async (
   params.append("query", query);
   if (limit) params.append("limit", limit.toString());
   if (offset) params.append("offset", offset.toString());
-  if (fields) params.append("sort", fields);
+  if (fields) params.append("fields", fields);
 
   const res = await fetch(url + "?" + params);
   return await res.json();

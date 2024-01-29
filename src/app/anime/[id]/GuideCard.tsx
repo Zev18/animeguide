@@ -34,6 +34,11 @@ export default function GuideCard({ guide }: { guide: Record<string, any> }) {
                   {guide.categories.category}
                 </Chip>
               )}
+              {guide.category && (
+                <Chip color="primary" variant="flat">
+                  {guide.category}
+                </Chip>
+              )}
             </div>
             <p className="text-sm text-foreground-500">{guide.description}</p>
             <div className="flex w-full justify-between">

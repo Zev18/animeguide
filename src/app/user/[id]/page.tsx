@@ -42,6 +42,9 @@ export default async function Page({ params }: { params?: { id: string } }) {
   ]);
 
   const promises = [];
+  if (userData.error) {
+    return notFound();
+  }
 
   if (guidesData.data) {
     const guidePromises = guidesData.data.map(
@@ -99,7 +102,7 @@ export default async function Page({ params }: { params?: { id: string } }) {
 
   if (!userData) return notFound();
 
-  console.log(guidesData.data);
+  console.log(reviewsData.data);
 
   return (
     <div className="flex flex-col gap-8">

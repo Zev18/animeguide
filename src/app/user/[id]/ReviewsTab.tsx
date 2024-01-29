@@ -72,24 +72,26 @@ export default function ReviewsTab({
           </Button>
         )}
       </div>
-      <InfiniteScroll
-        next={fetchNextReviews}
-        dataLength={reviewsList.length}
-        hasMore={count > reviewsList.length}
-        loader={
-          <div className="my-2 flex w-full justify-center">
-            <Spinner size="sm" />
-          </div>
-        }
-        style={{ overflow: "visible" }}
-        className="w-full md:px-8"
-      >
-        {reviewsList.map((review) => (
-          <div key={review.id} className="my-4 flex w-full justify-center">
-            <ReviewCard review={review} />
-          </div>
-        ))}
-      </InfiniteScroll>
+      {reviews.length > 0 && (
+        <InfiniteScroll
+          next={fetchNextReviews}
+          dataLength={reviewsList.length}
+          hasMore={count > reviewsList.length}
+          loader={
+            <div className="my-2 flex w-full justify-center">
+              <Spinner size="sm" />
+            </div>
+          }
+          style={{ overflow: "visible" }}
+          className="w-full md:px-8"
+        >
+          {reviewsList.map((review) => (
+            <div key={review.id} className="my-4 flex w-full justify-center">
+              <ReviewCard review={review} />
+            </div>
+          ))}
+        </InfiniteScroll>
+      )}
     </div>
   );
 }
